@@ -8,6 +8,7 @@ import QuestionSort from '../views/QuestionSort'
 import UserInfo from '../views/UserInfo'
 import NewProblem from '../views/NewProblem'
 import QuestionMannager from '../views/QuestionMannager'
+import Hello from '@/components/Hello'
 import Router from 'vue-router'
 
 
@@ -22,6 +23,12 @@ const routes = [
     path: '/Login',
     component: Login
   },
+  {
+    path: '/Hello',
+    name: 'Hello',
+    component: Hello
+  },
+
   {
     path: '/',
     component: Login

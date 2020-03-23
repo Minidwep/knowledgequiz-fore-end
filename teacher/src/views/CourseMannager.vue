@@ -11,31 +11,62 @@
     >
       <el-option v-for="item in options" :key="item.value" :label="item.name" :value="item.name"></el-option>
     </el-select>
-    <el-button @click="getCourseByKey" type="primary" style="margin-left: 16px;">查询</el-button>
+    <el-button @click="getTeacherByKey" type="primary" style="margin-left: 16px;">查询</el-button>
     <!-- 表格信息 -->
-    <el-table v-loading="loading" :data="courseData" border style="width: 100%" row-key="id">
+    <el-table
+      v-loading="loading"
+      :data="teacherData"
+      border
+      style="width: 100%"
+      row-key="id"
+      @row-dblclick="getCourse"
+    >
       >
-      <el-table-column type="index" width="50"></el-table-column>
+      <el-table-column prop="account" label="职工号" min-width="!4%" align="center"></el-table-column>
       <el-table-column prop="name" label="姓名" min-width="!4%" align="center"></el-table-column>
-      <el-table-column prop="detail" label="详情" min-width="!4%" align="center"></el-table-column>
+      <el-table-column prop="title" label="职位" min-width="!4%" align="center"></el-table-column>
+      <el-table-column prop="pwd" label="密码" min-width="!4%" align="center"></el-table-column>
+      <el-table-column prop="research" label="教研室" min-width="!4%" align="center"></el-table-column>
+      <el-table-column prop="acaDegree" label="学位" min-width="!4%" align="center"></el-table-column>
       <el-table-column label="操作" min-width="!4%">
         <template slot-scope="scope">
           <el-button
             icon="el-icon-edit"
-            @click="handleUpdateCourse(scope.row)"
+            @click="handleUpdateTeacher(scope.row)"
             type="primary"
             size="small"
           >编辑</el-button>
           <el-button
             icon="el-icon-delete"
-            @click="handleDeleteCourse(scope.$index,scope.row)"
+            @click="handleDeleteTeacher(scope.$index,scope.row)"
             type="danger"
             size="small"
           >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <!-- 教师任课信息 -->
+    <el-dialog title="授课信息" :visible.sync="dialogTeacherVisible">
+      <el-table :data="gridData">
+        <el-table-column type="index" width="50"></el-table-column>
+        <el-table-column property="name" label="课程名" width="150"></el-table-column>
+        <el-table-column property="detail" label="详情"></el-table-column>
+        <el-table-column label="操作" min-width="!4%">
+          <template slot-scope="scope">
+            <el-button
+              class="item-center"
+              icon="el-icon-delete"
+              @click="handleDeleteTeacherCourse(scope.$index,scope.row)"
+              type="danger"
+              size="small"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-button type="primary" @click="innerVisible = true">添加</el-button>
 
+      <el-dialog width="30%" title="内层 Dialog" :visible.sync="innerVisible" append-to-body></el-dialog>
+    </el-dialog>
     <br />
     <!-- 分页信息 -->
     <el-pagination
@@ -61,14 +92,23 @@
     >
       <div class="demo-drawer__content">
         <el-form :model="form">
-          <el-form-item label="课程id" :label-width="formLabelWidth">
-            <el-input disabled v-model="form.id" autocomplete="off"></el-input>
+          <el-form-item label="职工号" :label-width="formLabelWidth">
+            <el-input disabled v-model="form.account" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="课程名" :label-width="formLabelWidth">
+          <el-form-item label="姓名" :label-width="formLabelWidth">
             <el-input v-model="form.name" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="课程信息" :label-width="formLabelWidth">
-            <el-input v-model="form.detail" autocomplete="off"></el-input>
+          <el-form-item label="教研室" :label-width="formLabelWidth">
+            <el-input v-model="form.research" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="学位" :label-width="formLabelWidth">
+            <el-input v-model="form.acaDegree" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="职位" :label-width="formLabelWidth">
+            <el-input v-model="form.title" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="密码" :label-width="formLabelWidth">
+            <el-input v-model="form.pwd" autocomplete="off"></el-input>
           </el-form-item>
         </el-form>
         <div class="drawer_footer">
@@ -102,7 +142,7 @@
 
 <script>
 export default {
-  name: "CourseMannager",
+  name: "TeacherMannager",
 
   created: function() {
     this.toPage(1);
@@ -117,16 +157,16 @@ export default {
     toPage(pn) {
       this.loading = true;
       axios
-        .get(this.$baseUrl + "/admin/Course?pn=" + pn)
+        .get(this.$baseUrl + "/admin/Teacher?pn=" + pn)
         .then(res => {
           console.log(res);
           if (res.data.code == 100) {
             this.pageInfo = res.data.extend.pageInfo;
-            let courseList = this.pageInfo.list;
-            courseList.forEach(element => {
+            let teacherList = this.pageInfo.list;
+            teacherList.forEach(element => {
               element.hasChildren = true;
             });
-            this.courseData = courseList;
+            this.teacherData = teacherList;
             this.loading = false;
             this.pagination.total = this.pageInfo.total;
             this.pagination.currentPage = this.pageInfo.pageNum;
@@ -153,17 +193,17 @@ export default {
         });
     },
     // 更新教师信息
-    handleUpdateCourse(row) {
+    handleUpdateTeacher(row) {
       this.dialog = true;
       this.form = row;
     },
     // 删除教师信息
-    handleDeleteCourse(index, row) {
+    handleDeleteTeacher(index, row) {
       axios
-        .get(this.$baseUrl + "admin/Delete/Course?id=" + row.id)
+        .get(this.$baseUrl + "admin/Delete/Teacher?account=" + row.account)
         .then(res => {
           if (res.data.code == 100) {
-            // this.courseData.splice(index, 1);
+            // this.teacherData.splice(index, 1);
             this.$message({
               showClose: true,
               message: "删除信息成功",
@@ -195,7 +235,7 @@ export default {
           this.timer = setTimeout(() => {
             done();
             axios
-              .post(this.$baseUrl + "admin/Update/Course", this.form)
+              .post(this.$baseUrl + "admin/Update/Teacher", this.form)
               .then(res => {
                 if (res.data.code == 100) {
                   this.loading = false;
@@ -231,7 +271,49 @@ export default {
       this.dialog = false;
       clearTimeout(this.timer);
     },
+    // 获取教师任课信息
+    getCourse(row) {
+      this.handleTeacherAcc = row.account;
+      console.log(row);
+      axios
+        .get(this.$baseUrl + "/admin/Course/Teacher?account=" + row.account)
+        .then(res => {
+          if (res.data.code == 100) {
+            this.gridData = res.data.extend.list;
+            this.dialogTeacherVisible = true;
+          } else {
+            this.$message({
+              showClose: true,
+              message: "请检查网络情况",
+              type: "warning",
+              duration: 1000
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    // 删除教师任课信息
+    handleDeleteTeacherCourse(index, row) {
+      console.log(row);
 
+      axios
+        .post(this.$baseUrl + "admin/Delete/TeaCourse", {
+          account: this.handleTeacherAcc,
+          courseId: row.id
+        })
+        .then(res => {
+          let row = {
+            account: ""
+          };
+          row.account = this.handleTeacherAcc;
+          this.getCourse(row);
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
     // 模糊查询
     remoteMethod(query) {
       if (query !== "") {
@@ -240,20 +322,20 @@ export default {
           console.log("search");
           this.loading = false;
           axios
-            .get(this.$baseUrl + "/admin/Key/Course?keyword=" + query)
+            .get(this.$baseUrl + "/admin/Key/Teacher?keyword=" + query)
             .then(res => {
-              let courses = res.data.extend.courses;
-              console.log(courses);
+              let teachers = res.data.extend.teachers;
+              console.log(teachers);
 
               let options = [];
 
-              courses.forEach(element => {
+              teachers.forEach(element => {
                 let item = {
                   name: "",
                   value: ""
                 };
-                item.name = element.name + "-" + element.detail+"-"+element.id;
-                item.value = element.id;
+                item.name = element.name + "-" + element.account;
+                item.value = element.account;
                 options.push(item);
               });
               console.log(options);
@@ -269,7 +351,7 @@ export default {
       }
     },
     // 精确查询
-    getCourseByKey() {
+    getTeacherByKey() {
       if (this.value == "") {
         this.$message({
           showClose: true,
@@ -280,11 +362,14 @@ export default {
         return;
       }
       let strs = this.value.split("-");
-      let id = strs[strs.length - 1];
+      let account = strs[strs.length - 1];
       axios
-        .get(this.$baseUrl + "admin/Id/Course?id=" + id)
+        .get(this.$baseUrl + "admin/Account/Teacher?account=" + account)
         .then(res => {
-          if (res.data.extend.course == null || res.data.extend.course == "") {
+          if (
+            res.data.extend.teacher == null ||
+            res.data.extend.teacher == ""
+          ) {
             this.$message({
               showClose: true,
               message: "查询内容为空",
@@ -293,8 +378,8 @@ export default {
             });
           } else {
             let list = [];
-            list.push(res.data.extend.course);
-            this.courseData = list;
+            list.push(res.data.extend.teacher);
+            this.teacherData = list;
             console.log(res);
           }
         })
@@ -308,13 +393,13 @@ export default {
   data() {
     return {
       // 教师列表
-      courseData: [],
+      teacherData: [],
       // 教师任课列表
       gridData: [],
       // 当前操作的教师账号
-      handleCourseAcc: -1,
+      handleTeacherAcc: -1,
       // 外层模态框
-      dialogCourseVisible: false,
+      dialogTeacherVisible: false,
       // 内层模态框
       innerVisible: false,
       // 加载框
@@ -331,9 +416,10 @@ export default {
       dialog: false,
       // 抽屉内表单
       form: {
-        id: "",
+        account: "",
         name: "",
-        detail: ""
+        pwd: "",
+        college: ""
       },
       formLabelWidth: "80px",
       timer: null,

@@ -11,25 +11,21 @@
         label-width="100px"
         class="demo-ruleForm"
       >
-        <el-form-item label="问题标题" prop="name">
-          <el-input v-model="ruleForm.name"></el-input>
+        <el-form-item label="问题标题" prop="title">
+          <el-input v-model="ruleForm.title"></el-input>
         </el-form-item>
-        <el-form-item label="问题分类" prop="region">
-          <el-select v-model="ruleForm.region" placeholder="请选择问题分类">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+        <el-form-item label="问题分类" prop="courseId">
+          <el-select v-model="ruleForm.courseId" placeholder="请选择问题分类">
+            <el-option
+              v-for="item in courseList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="具体内容">
-          <quill-editor
-            v-model="content"
-            ref="myQuillEditor"
-            :options="editorOption"
-            @blur="onEditorBlur($event)"
-            @focus="onEditorFocus($event)"
-            @change="onEditorChange($event)"
-          ></quill-editor>
-          <button v-on:click="saveHtml">保存</button>
+          <rich-text-editor :text="ruleForm.detail" @editorChange="editorChange"></rich-text-editor>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
@@ -47,53 +43,73 @@
 </style>
 
 <script>
-import { quillEditor } from "vue-quill-editor";
+// import { quillEditor } from "vue-quill-editor";
+import richTextEditor from "../components/richTextEditor";
 export default {
   name: "NewProblem",
   components: {
-    quillEditor
+    richTextEditor
   },
 
   data() {
     return {
-      content: `<p>问题详情</p>`,
+      // 授课列表
+      courseList: [],
       editorOption: {},
       ruleForm: {
-        name: "",
-        region: "",
-       
+        title: "",
+        courseId: "",
+        detail: `<p>问题详情</p>`,
+        account: "110002"
       },
       rules: {
-        name: [
+        title: [
           { required: true, message: "请输入活动名称", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
+          {
+            min: 3,
+            max: 105,
+            message: "长度在 3 到 105 个字符",
+            trigger: "blur"
+          }
         ],
-        region: [
+        courseId: [
           { required: true, message: "请选择活动区域", trigger: "change" }
         ]
       }
-      
     };
   },
-  computed: {
-    editor() {
-      return this.$refs.myQuillEditor.quill;
-    }
+
+  created() {
+    this.getCourseList();
   },
+
   methods: {
-    onEditorReady(editor) {
-      // 准备编辑器
-    },
-    onEditorBlur() {}, // 失去焦点事件
-    onEditorFocus() {}, // 获得焦点事件
-    onEditorChange() {}, // 内容改变事件
-    saveHtml: function(event) {
-      alert(this.content);
+    editorChange(html) {
+      console.log(html);
+
+      this.ruleForm.detail = html;
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
+          axios
+            .post(this.$baseUrl + "/teacher/question", this.ruleForm)
+            .then(res => {
+              if (res.data.code == 100) {
+                this.$message({
+                  showClose: true,
+                  message: "提交问题成功",
+                  type: "success",
+                  duration: 1000
+                });
+                this.ruleForm.title = '',
+                this.ruleForm.detail = ''
+              }
+              console.log(res);
+            })
+            .catch(err => {
+              console.error(err);
+            });
         } else {
           console.log("error submit!!");
           return false;
@@ -102,6 +118,20 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    // 得到授课列表
+    getCourseList() {
+      axios
+        .get(this.$baseUrl + "/teacher/teaCourse/110002")
+        .then(res => {
+          console.log(res);
+          if (res.data.code == 100) {
+            this.courseList = res.data.extend.courseList;
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
     }
   }
 };

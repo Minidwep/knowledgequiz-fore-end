@@ -14,12 +14,12 @@ import 'quill/dist/quill.bubble.css'
 import 'bootstrap'
 import $ from 'jquery'
 
-var baseUrl = 'http://localhost:8080/'
+var baseUrl = 'http://localhost:8080'
 Vue.prototype.$baseUrl = baseUrl
 Vue.prototype.$qs = qs
 Vue.config.productionTip = false
 Vue.use(VueQuillEditor, /* { default global options } */)
-
+Vue.use($)
 new Vue({
   router,
   store,

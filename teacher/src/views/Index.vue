@@ -1,5 +1,5 @@
 <template>
-  <div id="app" style="overflow-x:hidden;">
+  <div id="app" style="overflow-x:hidden;min-height:1000px">
     <el-container style="min-height:900px; border: 1px solid #eee">
       <el-header style="text-align: right; font-size: 12px ;height:40px">
         <span>欢迎你：王冠锐</span>
@@ -111,4 +111,5 @@ export default {
   background-color: #3283bb !important;
   cursor: pointer;
 }
+#app::-webkit-scrollbar {display:none}
 </style>
