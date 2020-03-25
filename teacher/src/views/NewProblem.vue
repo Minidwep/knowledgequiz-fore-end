@@ -92,7 +92,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          axios
+          this.$baseAxios
             .post(this.$baseUrl + "/teacher/question", this.ruleForm)
             .then(res => {
               if (res.data.code == 100) {
@@ -121,7 +121,7 @@ export default {
     },
     // 得到授课列表
     getCourseList() {
-      axios
+      this.$baseAxios
         .get(this.$baseUrl + "/teacher/teaCourse/110002")
         .then(res => {
           console.log(res);

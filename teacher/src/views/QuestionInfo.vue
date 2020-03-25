@@ -137,7 +137,7 @@ export default {
       this.answerParam.account = "110002";
       this.answerParam.detail = this.detail;
       this.answerParam.questionId = this.question.id;
-      axios
+      this.$baseAxios
         .post(this.$baseUrl + "/teacher/answer", this.answerParam)
         .then(res => {
           if (res.data.code == 100) {
@@ -148,6 +148,7 @@ export default {
               duration: 1000
             });
             this.detail = '';
+            this.initAnswer();
           };
         })
         .catch(err => {
@@ -156,7 +157,7 @@ export default {
     },
     // 得到所有回答方法
     initAnswer(){
-      axios.get(this.$baseUrl+"/teacher/question/answer/"+this.question.id)
+      this.$baseAxios.get(this.$baseUrl+"/teacher/question/answer/"+this.question.id)
       .then(res => {
         if(res.data.code == 100){
           this.answerList= res.data.extend.answerVOList;

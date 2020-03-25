@@ -1,9 +1,19 @@
 <template>
   <div>
+    <div style="text-align:center">
+      <el-switch
+        v-model="switchValue"
+        active-color="#13ce66"
+        inactive-color="#ff4949"
+        @change="changeSwitch()"
+      ></el-switch>
+      <span>查看已发布的问题</span>
+      <el-divider></el-divider>
+    </div>
     <el-tabs tab-position="left" @tab-click="handleClick">
       <el-tab-pane v-for="item1 in courseList" :key="item1.id" :label="item1.name">
         <el-card v-for="item in questionList" :key="item.id" shadow="hover" class="question-item">
-          <div style="width:100%;height:100%" @click="handleAnswerQuestion(item)">
+          <div style="width:100%;height:100%">
             <p class="question-head">{{item.title}}</p>
             <el-row style="color:#a3b7d3;font-size:12px">
               <el-col :span="3">
@@ -15,11 +25,25 @@
               <el-col :span="3" :offset="5">
                 <p>{{item.upTime | formatTimer}}</p>
               </el-col>
-              <el-col :span="3">
-                <p>回答数：7</p>
-              </el-col>
-              <el-col :span="5">
-                <p class="accept-ok">{{item.status =='2'?"已有最佳答案":"待解决"}}</p>
+              <el-col :span="5" :offset="3">
+                <el-button
+                  type="danger"
+                  icon="el-icon-delete"
+                  @click="handleDeleteQuestion(item)"
+                  circle
+                ></el-button>
+                <el-button
+                  type="primary"
+                  icon="el-icon-edit"
+                  circle
+                  @click="handleEditQuestion(item)"
+                ></el-button>
+                <el-button
+                  type="success"
+                  icon="el-icon-check"
+                  circle
+                  @click="handleUpQuestion(item)"
+                ></el-button>
               </el-col>
             </el-row>
           </div>
@@ -36,6 +60,19 @@
         :current-page="pagination.currentPage"
         @current-change="handelCurrentChange($event)"
       ></el-pagination>
+      <el-dialog title="修改问题信息" :visible.sync="dialogVisible" width="30%">
+        <h5 style="text-align:left">问题标题：</h5>
+        <el-input v-model="dialogTitle" placeholder="请输入内容"></el-input>
+        <el-divider></el-divider>
+        <h5 style="text-align:left">问题内容：</h5>
+        <div>
+          <rich-text-editor :text="detail" @editorChange="editorChange"></rich-text-editor>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="handleUpdateQuestion()">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -47,8 +84,12 @@
 </style>
 
 <script>
+import richTextEditor from "../components/richTextEditor";
 export default {
   name: "QuestionSort",
+  components: {
+    richTextEditor
+  },
   data() {
     return {
       courseList: [],
@@ -58,7 +99,12 @@ export default {
         currentPage: 1,
         pageSize: 1
       },
-      courseId: ""
+      courseId: "",
+      dialogVisible: false,
+      dialogTitle: "",
+      detail: `<p>问题详情</p>`,
+      question: {},
+      switchValue: false
     };
   },
   created() {
@@ -83,6 +129,10 @@ export default {
     }
   },
   methods: {
+    // 富文本改变事件
+    editorChange(html) {
+      this.detail = html;
+    },
     // 得到授课列表
     getCourseList() {
       axios
@@ -111,11 +161,24 @@ export default {
       console.log(event);
       this.toPage(this.courseId, event);
     },
-
-    toPage(courseId, pn) { 
+    // 分页事件
+    toPage(courseId, pn) {
       this.loading = true;
+      let switchValue = this.switchValue;
+      let questionUri = "questionDown";
+      if (switchValue) {
+        questionUri = "question";
+      }
       axios
-        .get(this.$baseUrl + "/teacher/questionDown/course/" + courseId + "/" + pn)
+        .get(
+          this.$baseUrl +
+            "/teacher/" +
+            questionUri +
+            "/course/" +
+            courseId +
+            "/" +
+            pn
+        )
         .then(res => {
           console.log(res);
           if (res.data.code == 100) {
@@ -125,12 +188,12 @@ export default {
             this.pagination.pageSize = pageInfo.size;
             this.questionList = pageInfo.records;
 
-            this.$message({
-              showClose: true,
-              message: "数据加载成功",
-              type: "success",
-              duration: 1000
-            });
+            // this.$message({
+            //   showClose: true,
+            //   message: "数据加载成功",
+            //   type: "success",
+            //   duration: 1000
+            // });
           } else {
             this.$message({
               showClose: true,
@@ -144,10 +207,114 @@ export default {
           console.error(err);
         });
     },
-    // 跳转到问题详情
-    handleAnswerQuestion(item) {
-      // this.$router.push( {path:'/QuestionInfo',query:{qid:qid}});
-      this.$router.push({ name: "QuestionInfo", params: { question: item } });
+    // 更新打开模态框
+    handleEditQuestion(item) {
+      // 打开模态框
+      this.dialogVisible = true;
+      this.detail = item.detail;
+      this.dialogTitle = item.title;
+      this.question = item;
+    },
+    // 更新问题事件
+    handleUpdateQuestion() {
+      let question = this.question;
+      question.detail = this.detail;
+      question.title = this.dialogTitle;
+      axios
+        .put(this.$baseUrl + "/teacher/question", question)
+        .then(res => {
+          if (res.data.code == 100) {
+            this.$message({
+              showClose: true,
+              message: "问题修改成功",
+              type: "success",
+              duration: 1000
+            });
+            this.dialogVisible = false;
+          } else {
+            this.$message({
+              showClose: true,
+              message: "请检查网络情况",
+              type: "warning",
+              duration: 1000
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    // 删除问题事件
+    handleDeleteQuestion(item) {
+      this.$confirm("此操作将删除该题目, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          axios
+            .delete(this.$baseUrl + "/teacher/question/" + item.id)
+            .then(res => {
+              console.log(res);
+              if (res.data.code == 100) {
+                this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+                this.refresh();
+              } else {
+                this.$message({
+                  type: "warning",
+                  message: "请检查网络情况!"
+                });
+              }
+            })
+            .catch(err => {
+              console.error(err);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
+    // 发布问题事件
+    handleUpQuestion(item) {
+      axios
+        .put(this.$baseUrl + "/teacher/questionUp/" + item.id)
+        .then(res => {
+          if (res.data.code == 100) {
+            this.$message({
+              type: "success",
+              message: "发布成功!"
+            });
+            this.refresh();
+          }
+          console.log(res);
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    // 页面从后往前删时，调用的刷新方法
+    refresh() {
+      if (this.questionList.length == 1) {
+        console.log("查询前一页");
+
+        this.toPage(this.courseId, this.pagination.currentPage - 1);
+      } else {
+        this.toPage(this.courseId, this.pagination.currentPage);
+      }
+    },
+    // 是否显示以前已经审核的问题
+    changeSwitch() {
+      if (this.switchValue) {
+        this.toPage(this.courseId, 1);
+      } else {
+        this.toPage(this.courseId, 1);
+      }
     }
   }
 };

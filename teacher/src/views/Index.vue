@@ -6,7 +6,7 @@
       </el-header>
       <el-row :gutter="20" style="margin-top:40px;margin-bottom:40px">
         <el-col :span="6" :offset="8">
-          <el-select
+          <!-- <el-select
             style="width:100%;"
             v-model="value"
             multiple
@@ -26,7 +26,7 @@
           </el-select>
         </el-col>
         <el-col :span="10">
-          <el-button type="success">搜索答案</el-button>
+          <el-button type="success">搜索答案</el-button> -->
           <el-button type="primary" @click="toCreateProblem()">发布问题</el-button>
         </el-col>
       </el-row>
@@ -71,7 +71,7 @@ export default {
     };
   },
   created() {
-    this.$router.push({ path: "/AllQuestion" });
+   
   },
 
   methods: {

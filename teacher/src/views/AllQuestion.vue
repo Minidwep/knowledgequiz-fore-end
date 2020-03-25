@@ -129,7 +129,7 @@ export default {
     // 去pn页查询分页信息
     toPage(pn) {
       this.loading = true;
-      axios
+      this.$baseAxios
         .get(this.$baseUrl + "/teacher/questionList/" + "110002" + "/" + pn)
         .then(res => {
           console.log(res);

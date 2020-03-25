@@ -85,7 +85,7 @@ export default {
   methods: {
     // 得到授课列表
     getCourseList() {
-      axios
+      this.$baseAxios
         .get(this.$baseUrl + "/teacher/teaCourse/110002")
         .then(res => {
           console.log(res);
@@ -114,7 +114,7 @@ export default {
 
     toPage(courseId, pn) {
       this.loading = true;
-      axios
+      this.$baseAxios
         .get(this.$baseUrl + "/teacher/question/course/" + courseId + "/" + pn)
         .then(res => {
           console.log(res);

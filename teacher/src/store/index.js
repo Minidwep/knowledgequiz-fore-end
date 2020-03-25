@@ -2,14 +2,20 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 Vue.use(Vuex)
-
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
+      token: ''
   },
   mutations: {
-  },
-  actions: {
-  },
-  modules: {
+      setToken (state, token) {
+          state.token = token;
+          sessionStorage.token = token;
+      },
+      removeToken (state) {
+          state.token = '';
+          sessionStorage.removeItem('token');
+      }
   }
-})
+});
+
+export default store;
