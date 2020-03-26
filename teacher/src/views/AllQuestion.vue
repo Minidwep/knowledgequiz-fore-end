@@ -7,7 +7,6 @@
         <li data-target="#demo" data-slide-to="1"></li>
         <li data-target="#demo" data-slide-to="2"></li>
       </ul>
-
       <!-- 轮播图片 -->
       <div class="carousel-inner">
         <div class="carousel-item active">
@@ -52,7 +51,7 @@
               <p>回答数：7</p>
             </el-col>
             <el-col :span="5">
-              <p class="accept-ok">{{item.status =='2'?"已有最佳答案":"待解决"}}</p>
+              <p :class="[item.status =='2'?'accept-ok':'accept']">{{item.status =='2'?"已有最佳答案":"待解决"}}</p>
             </el-col>
           </el-row>
         </div>
@@ -76,7 +75,8 @@
 .accept-ok {
   color: #67c23a;
 }
-.accept-no {
+.accept {
+  color: #d18c4c;
 }
 .question-item {
   margin-bottom: 10px;
@@ -130,7 +130,7 @@ export default {
     toPage(pn) {
       this.loading = true;
       this.$baseAxios
-        .get(this.$baseUrl + "/teacher/questionList/" + "110002" + "/" + pn)
+        .get(this.$baseUrl + "/teacher/questionList/" + this.$store.state.account + "/" + pn)
         .then(res => {
           console.log(res);
           if (res.data.code == 100) {

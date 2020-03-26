@@ -19,7 +19,7 @@
                 <p>回答数：7</p>
               </el-col>
               <el-col :span="5">
-                <p class="accept-ok">{{item.status =='2'?"已有最佳答案":"待解决"}}</p>
+                 <p :class="[item.status =='2'?'accept-ok':'accept']">{{item.status =='2'?"已有最佳答案":"待解决"}}</p>
               </el-col>
             </el-row>
           </div>
@@ -43,6 +43,12 @@
 <style>
 .question-item {
   margin-bottom: 10px;
+}
+.accept-ok {
+  color: #67c23a;
+}
+.accept {
+  color: #d18c4c;
 }
 </style>
 
@@ -86,7 +92,7 @@ export default {
     // 得到授课列表
     getCourseList() {
       this.$baseAxios
-        .get(this.$baseUrl + "/teacher/teaCourse/110002")
+        .get(this.$baseUrl + "/teacher/teaCourse/"+this.$store.state.account)
         .then(res => {
           console.log(res);
           if (res.data.code == 100) {

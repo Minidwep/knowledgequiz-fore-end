@@ -2,7 +2,7 @@
   <div id="app" style="overflow-x:hidden;min-height:1000px">
     <el-container style="min-height:900px; border: 1px solid #eee">
       <el-header style="text-align: right; font-size: 12px ;height:40px">
-        <span>欢迎你：王冠锐</span>
+        <span>欢迎你：{{this.$store.state.name}}</span>
       </el-header>
       <el-row :gutter="20" style="margin-top:40px;margin-bottom:40px">
         <el-col :span="6" :offset="8">

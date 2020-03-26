@@ -53,20 +53,22 @@
             <el-col :span="1">
               <el-avatar :size="20" :src="circleUrl"></el-avatar>
             </el-col>
-            <el-col :span="23">
-              <p style="margin-bottom:0px">{{item.userName}}</p>
+            <el-col :span="4">
+              <p style="margin-bottom:0px">{{item.username}}</p>
+            </el-col>
+            <el-col :span="4" :offset="15">
+              <p style="margin-bottom:0px">{{item.star == 1 ?'该答案已被采纳！':''}}</p>
             </el-col>
           </el-row>
           <p class="answer-time">{{item.upTime | formatTimer}} 回答</p>
         </div>
         <div v-html="item.detail"></div>
-        <div style="text-align:right">
-          <el-button type="danger">删除</el-button>
-          <el-button type="success">采纳</el-button>
+        <div style="text-align:right" v-if="isHandleAnswer">
+          <el-button type="danger" @click="handleDeleteAnswer(item.id)">删除</el-button>
+          <el-button type="success" @click="handleUpAnswer(item.id)">采纳</el-button>
         </div>
       </el-card>
     </div>
-
   </div>
 </template>
 
@@ -83,7 +85,7 @@
 <script>
 import richTextEditor from "../components/richTextEditor";
 export default {
-  name: "NewProblem",
+  name: "QuestionInfo",
   components: {
     richTextEditor
   },
@@ -102,11 +104,13 @@ export default {
         detail: "",
         questionId: ""
       },
-      answerList:[]
+      answerList: [],
+      isHandleAnswer: false
     };
   },
   created() {
     this.question = this.$route.params.question;
+
     this.initAnswer();
   },
   filters: {
@@ -134,7 +138,7 @@ export default {
     },
     // 回答信息方法
     handleAnswerQuestion() {
-      this.answerParam.account = "110002";
+      this.answerParam.account = this.$store.state.account;
       this.answerParam.detail = this.detail;
       this.answerParam.questionId = this.question.id;
       this.$baseAxios
@@ -147,26 +151,51 @@ export default {
               type: "success",
               duration: 1000
             });
-            this.detail = '';
+            this.detail = "";
             this.initAnswer();
-          };
+          }
         })
         .catch(err => {
           console.error(err);
         });
     },
     // 得到所有回答方法
-    initAnswer(){
-      this.$baseAxios.get(this.$baseUrl+"/teacher/question/answer/"+this.question.id)
-      .then(res => {
-        if(res.data.code == 100){
-          this.answerList= res.data.extend.answerVOList;
-        }
-        console.log(res)
-      })
-      .catch(err => {
-        console.error(err); 
-      })
+    initAnswer() {
+      this.$baseAxios
+        .get(this.$baseUrl + "/teacher/question/answer/" + this.question.id)
+        .then(res => {
+          if (res.data.code == 100) {
+            this.answerList = res.data.extend.answerVOList;
+            // 是否可以采纳或者删除该问题的回答
+            this.initHandleAnswer();
+            this.answerList.forEach((element,index) => {
+              if (element.star == '1') {
+                let temp = this.answerList[0];
+                this.answerList[0] = element;
+                this.answerList[index] = temp;
+                this.isHandleAnswer = false;
+              }
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    initHandleAnswer() {
+      let flag = this.question.account == this.$store.state.account;
+      this.isHandleAnswer = flag;
+    },
+    handleDeleteAnswer() {},
+    handleUpAnswer(answerId) {
+      this.$baseAxios
+        .get(this.$baseUrl + "/teacher/answerUp/" + answerId)
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.error(err);
+        });
     }
   }
 };

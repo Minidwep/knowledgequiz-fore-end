@@ -12,20 +12,37 @@
             alt="头像"
           />
         </el-col>
-        <el-col :span="4" offset="2" align="left">
-          <p>提问数：10</p>
-          <p>回答数：11</p>
-          <p>采纳数：12</p>
+        <el-col :span="8" :offset="2" align="left">
+          <p>
+            提问数：
+            <span>{{userInfo.questionNum}}</span>
+          </p>
+          <p>
+            回答数：
+            <span>{{userInfo.answerNum}}</span>
+          </p>
+          <p>
+            采纳数：
+            <span>{{userInfo.answerStarNum}}</span>
+          </p>
         </el-col>
-        <el-col :span="10">
+        <el-col :span="6">
           <p></p>
         </el-col>
       </el-row>
     </div>
+<br><br>
     <div class="info-body" style="margin-top:40px">
-      <el-tabs tab-position="left">
-        <el-tab-pane label="我的科目">我的科目</el-tab-pane>
-        <el-tab-pane label="我的提问">我的提问</el-tab-pane>
+      <el-tabs tab-position="left" @tab-click="handleClick">
+        <el-tab-pane label="我的科目">
+          <div v-for="item in courseList" :key="item.id" style="text-align:center">
+            <span>{{item.name}}</span>
+            <el-divider></el-divider>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="我的提问">
+          
+        </el-tab-pane>
         <el-tab-pane label="我的回答">我的回答</el-tab-pane>
       </el-tabs>
     </div>
@@ -41,11 +58,56 @@
 <script>
 export default {
   name: "UserInfo",
+  created() {
+    this.initUserInfo();
+    this.initCourseList();
+  },
   data() {
-    return {};
+    return {
+      userInfo: {
+        answerNum: "",
+        answerStarNum: "",
+        questionNum: ""
+      },
+      courseList: []
+    };
   },
   computed: {},
-  methods: {}
+  methods: {
+    initUserInfo() {
+      this.$baseAxios
+        .get(this.$baseUrl + "/teacher/userInfo/" + this.$store.state.account)
+        .then(res => {
+          console.log(res);
+
+          let userInfo = res.data.extend;
+          this.userInfo.answerNum = userInfo.answerNum;
+          this.userInfo.answerStarNum = userInfo.answerStarNum;
+          this.userInfo.questionNum = userInfo.questionNum;
+          console.log(this.userInfo);
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    initCourseList() {
+      this.$baseAxios
+        .get(this.$baseUrl + "/teacher/teaCourse/" + this.$store.state.account)
+        .then(res => {
+          console.log(res);
+          if (res.data.code == 100) {
+            this.courseList = res.data.extend.courseList;
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    // 导航点击事件
+    handleClick(tab, event) {
+      console.log(tab.index);
+    }
+  }
 };
 </script>
 

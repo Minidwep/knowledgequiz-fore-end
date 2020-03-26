@@ -60,7 +60,7 @@ export default {
         title: "",
         courseId: "",
         detail: `<p>问题详情</p>`,
-        account: "110002"
+        account: this.$store.state.account
       },
       rules: {
         title: [
@@ -122,7 +122,7 @@ export default {
     // 得到授课列表
     getCourseList() {
       this.$baseAxios
-        .get(this.$baseUrl + "/teacher/teaCourse/110002")
+        .get(this.$baseUrl + "/teacher/teaCourse/"+this.$store.state.account)
         .then(res => {
           console.log(res);
           if (res.data.code == 100) {

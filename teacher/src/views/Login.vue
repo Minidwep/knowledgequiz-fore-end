@@ -9,7 +9,7 @@
         <el-input type="password" placeholder="请输入密码" v-model="form.password" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" v-on:click="onSubmit('loginForm')">登录</el-button>
+        <el-button type="primary" v-on:click="onSubmit('loginForm')" :loading="loading">登录</el-button>
       </el-form-item>
     </el-form>
 
@@ -27,6 +27,7 @@ export default {
   name: "Login",
   data() {
     return {
+      loading: false,
       form: {
         username: "",
         password: ""
@@ -46,6 +47,7 @@ export default {
   },
   methods: {
     onSubmit(formName) {
+      this.loading = true;
       // 为表单绑定验证功能
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -53,9 +55,12 @@ export default {
           this.$baseAxios
             .post(this.$baseUrl + "/authenticate", this.form)
             .then(res => {
-              console.log(res);
-
-              this.loginSuccess(res);
+              console.log(res
+              );
+              setTimeout(()=> {
+                this.loading = false;
+                this.loginSuccess(res);
+              }, 1000);
             })
             .catch(err => {
               this.loginError(err);
@@ -67,31 +72,24 @@ export default {
       });
     },
     loginSuccess(response) {
-      let token = response.data.token;
+      let token = response.data.extend.token.token;
+      let name = response.data.extend.user.name;
+      let account = response.data.extend.user.account;
       this.$store.commit("setToken", token);
-
+      this.$store.commit("setName", name);
+      this.$store.commit("setAccount", account);
       sessionStorage.setItem("token", token);
+      let tokenInSession =  sessionStorage.getItem("token");
 
+      console.log(this.$store.state.token);
       this.$baseAxios.defaults.headers.common["Authorization"] =
-        "Bearer " + token;
-
+        "Bearer " + tokenInSession;
       this.$router.push({ path: "/AllQuestion" });
     },
     loginError(error) {
-      console.log(error.response.status);
-      let errorMessage = "";
-      switch (error.response.status) {
-        case 401:
-          // this.invalidUsername = true;
-          // this.invalidPassword = true;
-          errorMessage = "用户名或密码错误";
-          break;
-        default:
-          errorMessage = "登录错误";
-      }
       this.$message({
         type: "error",
-        message: errorMessage,
+        message: "用户名或密码错误",
         duration: 5000,
         showClose: true
       });

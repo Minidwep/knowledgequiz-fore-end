@@ -9,6 +9,7 @@
       ></el-switch>
       <span>查看已发布的问题</span>
       <el-divider></el-divider>
+      {{this.$store.state.account}}
     </div>
     <el-tabs tab-position="left" @tab-click="handleClick">
       <el-tab-pane v-for="item1 in courseList" :key="item1.id" :label="item1.name">
@@ -135,14 +136,13 @@ export default {
     },
     // 得到授课列表
     getCourseList() {
-      axios
-        .get(this.$baseUrl + "/teacher/teaCourse/110002")
+      this.$baseAxios
+        .get(this.$baseUrl + "/teacher/teaCourse/"+this.$store.state.account)
         .then(res => {
           console.log(res);
           if (res.data.code == 100) {
             this.courseList = res.data.extend.courseList;
             this.courseId = this.courseList[0].id;
-
             this.toPage(this.courseId, 1);
           }
         })
@@ -169,7 +169,7 @@ export default {
       if (switchValue) {
         questionUri = "question";
       }
-      axios
+      this.$baseAxios
         .get(
           this.$baseUrl +
             "/teacher/" +
@@ -220,7 +220,7 @@ export default {
       let question = this.question;
       question.detail = this.detail;
       question.title = this.dialogTitle;
-      axios
+      this.$baseAxios
         .put(this.$baseUrl + "/teacher/question", question)
         .then(res => {
           if (res.data.code == 100) {
@@ -252,7 +252,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          axios
+            this.$baseAxios
             .delete(this.$baseUrl + "/teacher/question/" + item.id)
             .then(res => {
               console.log(res);
@@ -282,13 +282,13 @@ export default {
     },
     // 发布问题事件
     handleUpQuestion(item) {
-      axios
+        this.$baseAxios
         .put(this.$baseUrl + "/teacher/questionUp/" + item.id)
         .then(res => {
           if (res.data.code == 100) {
             this.$message({
               type: "success",
-              message: "发布成功!"
+              message: "审核成功!"
             });
             this.refresh();
           }
