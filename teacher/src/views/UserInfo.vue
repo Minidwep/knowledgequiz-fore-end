@@ -78,10 +78,10 @@
           <el-card v-for="item in answerList" :key="item.id" shadow="hover" class="question-item">
             <div style="width:100%;height:100%" @click="handleQuestionAnswer(item.questionId)">
               <el-row style="color:#a3b7d3;font-size:12px">
-                <el-col :span="8" >
+                <el-col :span="8">
                   <p>{{item.title}}</p>
                 </el-col>
-  
+
                 <el-col :span="3" :offset="2">
                   <p>{{item.upTime | formatTimer}}</p>
                 </el-col>
@@ -104,6 +104,28 @@
               @current-change="handelAnswerChange($event)"
             ></el-pagination>
           </div>
+        </el-tab-pane>
+        <el-tab-pane label="修改密码">
+          <el-form
+            :model="ruleForm"
+            :rules="rules"
+            ref="ruleForm"
+            label-width="100px"
+            class="demo-ruleForm"
+          >
+            <el-form-item label="输入原密码" prop="exPwd">
+              <el-input placeholder="请输入原密码" v-model="ruleForm.exPwd" show-password></el-input>
+            </el-form-item>
+            <el-form-item label="输入新密码" prop="input1">
+              <el-input placeholder="请输入新密码" v-model="ruleForm.input1" show-password></el-input>
+            </el-form-item>
+            <el-form-item label="输入新密码" prop="input2">
+              <el-input placeholder="请输入新密码" v-model="ruleForm.input2" show-password></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="submitForm('ruleForm')">立即修改</el-button>
+            </el-form-item>
+          </el-form>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -144,6 +166,43 @@ export default {
         total: 1,
         currentPage: 1,
         pageSize: 1
+      },
+      ruleForm: {
+        exPwd: "",
+        input1: "",
+        input2: "",
+        account: this.$store.state.account,
+        pwd: ""
+      },
+
+      rules: {
+        exPwd: [
+          { required: true, message: "请输入原密码", trigger: "blur" },
+          {
+            min: 3,
+            max: 20,
+            message: "长度在 3 到 20 个字符",
+            trigger: "blur"
+          }
+        ],
+        input1: [
+          { required: true, message: "请输入新密码", trigger: "blur" },
+          {
+            min: 3,
+            max: 20,
+            message: "长度在 3 到 20 个字符",
+            trigger: "blur"
+          }
+        ],
+        input2: [
+          { required: true, message: "请输入新密码", trigger: "blur" },
+          {
+            min: 3,
+            max: 20,
+            message: "长度在 3 到 20 个字符",
+            trigger: "blur"
+          }
+        ]
       }
     };
   },
@@ -284,6 +343,48 @@ export default {
     handelAnswerChange(event) {
       console.log(event);
       this.initAnswerList(event);
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          if (this.ruleForm.input1 === this.ruleForm.input2) {
+            this.ruleForm.pwd = this.ruleForm.input2;
+            this.$baseAxios
+              .post(this.$baseUrl + "/teacher/password", this.ruleForm)
+              .then(res => {
+                if (res.data.code == 100) {
+                  this.$message({
+                    showClose: true,
+                    message: "密码修改成功。请重新登录",
+                    type: "success",
+                    duration: 1000
+                  });
+                } else {
+                  this.$message({
+                    showClose: true,
+                    message: "修改密码失败! 请检查原密码",
+                    type: "danger",
+                    duration: 1000
+                  });
+                }
+                console.log(res);
+              })
+              .catch(err => {
+                console.error(err);
+              });
+          } else {
+            this.$message({
+              showClose: true,
+              message: "您输入的2次密码不相同",
+              type: "danger",
+              duration: 1000
+            });
+          }
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     }
   }
 };
