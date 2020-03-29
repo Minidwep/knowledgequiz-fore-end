@@ -79,7 +79,6 @@
       @current-change="handelCurrentChange($event)"
     ></el-pagination>
 
-    <el-button @click="dialog = true" type="primary" style="margin-left: 16px;">点我打开</el-button>
 
     <!-- 抽屉信息 -->
     <el-drawer
@@ -156,7 +155,7 @@ export default {
     // 去pn页查询分页信息
     toPage(pn) {
       this.loading = true;
-      axios
+      this.$baseAxios
         .get(this.$baseUrl + "/admin/Teacher?pn=" + pn)
         .then(res => {
           console.log(res);
@@ -199,8 +198,8 @@ export default {
     },
     // 删除教师信息
     handleDeleteTeacher(index, row) {
-      axios
-        .get(this.$baseUrl + "admin/Delete/Teacher?account=" + row.account)
+      this.$baseAxios
+        .get(this.$baseUrl + "/admin/Delete/Teacher?account=" + row.account)
         .then(res => {
           if (res.data.code == 100) {
             // this.teacherData.splice(index, 1);
@@ -234,8 +233,8 @@ export default {
           this.loading = true;
           this.timer = setTimeout(() => {
             done();
-            axios
-              .post(this.$baseUrl + "admin/Update/Teacher", this.form)
+            this.$baseAxios
+              .post(this.$baseUrl + "/admin/Update/Teacher", this.form)
               .then(res => {
                 if (res.data.code == 100) {
                   this.loading = false;
@@ -275,7 +274,7 @@ export default {
     getCourse(row) {
       this.handleTeacherAcc = row.account;
       console.log(row);
-      axios
+      this.$baseAxios
         .get(this.$baseUrl + "/admin/Course/Teacher?account=" + row.account)
         .then(res => {
           if (res.data.code == 100) {
@@ -298,8 +297,8 @@ export default {
     handleDeleteTeacherCourse(index, row) {
       console.log(row);
 
-      axios
-        .post(this.$baseUrl + "admin/Delete/TeaCourse", {
+      this.$baseAxios
+        .post(this.$baseUrl + "/admin/Delete/TeaCourse", {
           account: this.handleTeacherAcc,
           courseId: row.id
         })
@@ -321,7 +320,7 @@ export default {
         setTimeout(() => {
           console.log("search");
           this.loading = false;
-          axios
+          this.$baseAxios
             .get(this.$baseUrl + "/admin/Key/Teacher?keyword=" + query)
             .then(res => {
               let teachers = res.data.extend.teachers;
@@ -363,8 +362,8 @@ export default {
       }
       let strs = this.value.split("-");
       let account = strs[strs.length - 1];
-      axios
-        .get(this.$baseUrl + "admin/Account/Teacher?account=" + account)
+      this.$baseAxios
+        .get(this.$baseUrl + "/admin/Account/Teacher?account=" + account)
         .then(res => {
           if (
             res.data.extend.teacher == null ||

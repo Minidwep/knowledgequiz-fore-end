@@ -10,6 +10,7 @@
               ref="uploadTeacher"
               multiple
               action="http://localhost:8080/admin/TeacherExcelUpload/"
+              :headers="tokenHeader"
               :on-preview="handleTeacherPreview"
               :on-remove="handleTeacherRemove"
               :file-list="fileTeacherList"
@@ -39,6 +40,7 @@
               ref="uploadStudent"
               multiple
               action="http://localhost:8080/admin/StudentExcelUpload/"
+              :headers="tokenHeader"
               :on-preview="handleStudentPreview"
               :on-remove="handleStudentRemove"
               :file-list="fileStudentList"
@@ -60,7 +62,7 @@
         </div>
       </el-col>
 
-            <el-col :span="6">
+      <el-col :span="6">
         <div class="grid-content bg-purple-light">
           <div class="teacher-uplod">
             <h3>上传课程信息</h3>
@@ -69,6 +71,7 @@
               ref="uploadCourse"
               multiple
               action="http://localhost:8080/admin/CourseExcelUpload/"
+              :headers="tokenHeader"
               :on-preview="handleCoursePreview"
               :on-remove="handleCourseRemove"
               :file-list="fileCourseList"
@@ -102,7 +105,10 @@ export default {
     return {
       fileTeacherList: [],
       fileStudentList: [],
-      fileCourseList: []
+      fileCourseList: [],
+      tokenHeader:{
+        "Authorization":"Bearer "+this.$store.state.token
+      }
     };
   },
   methods: {
@@ -115,28 +121,28 @@ export default {
       if (response.code == 100) {
         this.$message({
           showClose: true,
-          message: "文件"+file.name+"插入数据成功",
+          message: "文件" + file.name + "插入数据成功",
           type: "success",
-          duration:1000
+          duration: 1000
         });
       } else {
-        file.status="error"
+        file.status = "error";
         this.$message({
           showClose: true,
-          message: "文件"+file.name+"插入数据失败",
+          message: "文件" + file.name + "插入数据失败",
           type: "error",
-          duration:1000
+          duration: 1000
         });
       }
       console.log(response);
     },
     handleTeacherError(err, file, fileList) {
-      file.status="error"
+      file.status = "error";
       this.$message({
         showClose: true,
-        message: "文件"+file.name+"插入数据失败",
+        message: "文件" + file.name + "插入数据失败",
         type: "error",
-        duration:1000
+        duration: 1000
       });
     },
     handleTeacherRemove(file, fileList) {
@@ -158,31 +164,31 @@ export default {
       console.log(file);
     },
     handleStudentSuccess(response, file, fileList) {
-      console.log(file.name)
+      console.log(file.name);
       if (response.code == 100) {
         this.$message({
           showClose: true,
-          message: "文件"+file.name+"插入数据成功",
+          message: "文件" + file.name + "插入数据成功",
           type: "success",
-          duration:1000
+          duration: 1000
         });
       } else {
-        file.status="error"
+        file.status = "error";
         this.$message({
           showClose: true,
-          message: "文件"+file.name+"插入数据失败",
+          message: "文件" + file.name + "插入数据失败",
           type: "error",
-          duration:1000
+          duration: 1000
         });
       }
     },
     handleStudentError(err, file, fileList) {
       this.$message({
-          showClose: true,
-          message: "文件"+file.name+"插入数据失败",
-          type: "error",
-          duration:1000
-        });
+        showClose: true,
+        message: "文件" + file.name + "插入数据失败",
+        type: "error",
+        duration: 1000
+      });
     },
     // --上传学生信息方法--
 
@@ -197,31 +203,31 @@ export default {
       console.log(file);
     },
     handleCourseSuccess(response, file, fileList) {
-      console.log(file.name)
+      console.log(file.name);
       if (response.code == 100) {
         this.$message({
           showClose: true,
-          message: "文件"+file.name+"插入数据成功",
+          message: "文件" + file.name + "插入数据成功",
           type: "success",
-          duration:1000
+          duration: 1000
         });
       } else {
-        file.status="error"
+        file.status = "error";
         this.$message({
           showClose: true,
-          message: "文件"+file.name+"插入数据失败",
+          message: "文件" + file.name + "插入数据失败",
           type: "error",
-          duration:1000
+          duration: 1000
         });
       }
     },
     handleCourseError(err, file, fileList) {
       this.$message({
-          showClose: true,
-          message: "文件"+file.name+"插入数据失败",
-          type: "error",
-          duration:1000
-        });
+        showClose: true,
+        message: "文件" + file.name + "插入数据失败",
+        type: "error",
+        duration: 1000
+      });
     }
     // --上传学生信息方法--
   }

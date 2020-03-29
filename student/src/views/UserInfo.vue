@@ -8,7 +8,7 @@
             width: 100%;
             height: width;
             object-fit: cover;"
-            src="../assets/jiaoshi.png"
+            src="../assets/xuesheng.png"
             alt="头像"
           />
         </el-col>
@@ -78,10 +78,10 @@
           <el-card v-for="item in answerList" :key="item.id" shadow="hover" class="question-item">
             <div style="width:100%;height:100%" @click="handleQuestionAnswer(item.questionId)">
               <el-row style="color:#a3b7d3;font-size:12px">
-                <el-col :span="8" >
+                <el-col :span="8">
                   <p>{{item.title}}</p>
                 </el-col>
-  
+
                 <el-col :span="3" :offset="2">
                   <p>{{item.upTime | formatTimer}}</p>
                 </el-col>
@@ -168,7 +168,7 @@ export default {
   methods: {
     initUserInfo() {
       this.$baseAxios
-        .get(this.$baseUrl + "/teacher/userInfo/" + this.$store.state.account)
+        .get(this.$baseUrl + "/student/userInfo/" + this.$store.state.account)
         .then(res => {
           console.log(res);
 
@@ -185,7 +185,7 @@ export default {
     // 初始化选课信息
     initCourseList() {
       this.$baseAxios
-        .get(this.$baseUrl + "/teacher/teaCourse/" + this.$store.state.account)
+        .get(this.$baseUrl + "/student/stuCourse/" + this.$store.state.account)
         .then(res => {
           console.log(res);
           if (res.data.code == 100) {
@@ -201,7 +201,7 @@ export default {
       this.$baseAxios
         .get(
           this.$baseUrl +
-            "/teacher/questionList/One/" +
+            "/student/questionList/One/" +
             this.$store.state.account +
             "/" +
             pn
@@ -225,7 +225,7 @@ export default {
       this.$baseAxios
         .get(
           this.$baseUrl +
-            "/teacher/answerList/One/" +
+            "/student/answerList/One/" +
             this.$store.state.account +
             "/" +
             pn
@@ -256,12 +256,22 @@ export default {
     },
     handleAnswerQuestion(item) {
       // this.$router.push( {path:'/QuestionInfo',query:{qid:qid}});
-      this.$router.push({ name: "QuestionInfo", params: { question: item } });
+      if(item.status >0){
+        this.$router.push({ name: "QuestionInfo", params: { question: item } });
+      }else{
+         this.$message({
+          showClose: true,
+          message: "您的问题还未被审核！",
+          type: "error",
+          duration: 1000
+        });
+      }
+      
     },
     handleQuestionAnswer(qid) {
       // this.$router.push( {path:'/QuestionInfo',query:{qid:qid}});
       this.$baseAxios
-        .get(this.$baseUrl + "/teacher/question/" + qid)
+        .get(this.$baseUrl + "/student/question/" + qid)
         .then(res => {
           console.log(res);
           if (res.data.code == 100) {

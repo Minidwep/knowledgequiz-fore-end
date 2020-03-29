@@ -84,7 +84,7 @@ export default {
       console.log(this.$store.state.token);
       this.$baseAxios.defaults.headers.common["Authorization"] =
         "Bearer " + tokenInSession;
-      this.$router.push({ path: "/Index" });
+      this.$router.push({ path: "/AllQuestion" });
     },
     loginError(error) {
       this.$message({

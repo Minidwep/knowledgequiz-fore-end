@@ -77,8 +77,6 @@
 
     <!-- 分页信息 -->
 
-    <el-button @click="dialog = true" type="primary" style="margin-left: 16px;">点我打开</el-button>
-
     <!-- 抽屉信息 -->
     <el-drawer
       title="更新学生信息"
@@ -148,7 +146,7 @@ export default {
     // 去pn页查询分页信息
     toPage(pn) {
       this.loading = true;
-      axios
+      this.$baseAxios
         .get(this.$baseUrl + "/admin/Student?pn=" + pn)
         .then(res => {
           console.log(res);
@@ -187,8 +185,8 @@ export default {
     },
     // 删除学生信息
     handleDeleteStudent(index, row) {
-      axios
-        .get(this.$baseUrl + "admin/Delete/Student?account=" + row.account)
+      this.$baseAxios
+        .get(this.$baseUrl + "/admin/Delete/Student?account=" + row.account)
         .then(res => {
           if (res.data.code == 100) {
             // this.studentData.splice(index, 1);
@@ -215,8 +213,8 @@ export default {
           this.loading = true;
           this.timer = setTimeout(() => {
             done();
-            axios
-              .post(this.$baseUrl + "admin/Update/Student", this.form)
+            this.$baseAxios
+              .post(this.$baseUrl + "/admin/Update/Student", this.form)
               .then(res => {
                 if (res.data.code == 100) {
                   this.loading = false;
@@ -256,7 +254,7 @@ export default {
     getCourse(row) {
       this.handleStudentAcc = row.account;
       console.log(row);
-      axios
+      this.$baseAxios
         .get(this.$baseUrl + "/admin/Course/Student?account=" + row.account)
         .then(res => {
           if (res.data.code == 100) {
@@ -279,8 +277,8 @@ export default {
     handleDeleteStudentCourse(index, row) {
       console.log(row);
 
-      axios
-        .post(this.$baseUrl + "admin/Delete/StuCourse", {
+      this.$baseAxios
+        .post(this.$baseUrl + "/admin/Delete/StuCourse", {
           account: this.handleStudentAcc,
           courseId: row.id
         })
@@ -302,7 +300,7 @@ export default {
         setTimeout(() => {
           console.log("search");
           this.loading = false;
-          axios
+          this.$baseAxios
             .get(this.$baseUrl + "/admin/Key/Student?keyword=" + query)
             .then(res => {
               let students = res.data.extend.students;
@@ -344,7 +342,7 @@ export default {
       }
       let strs = this.value.split("-");
       let account = strs[strs.length-1];
-      axios.get(this.$baseUrl + "admin/Account/Student?account="+account)
+      this.$baseAxios.get(this.$baseUrl + "/admin/Account/Student?account="+account)
       .then(res => {
         let list = [];
         list.push(res.data.extend.student);

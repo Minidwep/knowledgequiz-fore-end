@@ -142,7 +142,7 @@ export default {
       this.answerParam.detail = this.detail;
       this.answerParam.questionId = this.question.id;
       this.$baseAxios
-        .post(this.$baseUrl + "/teacher/answer", this.answerParam)
+        .post(this.$baseUrl + "/student/answer", this.answerParam)
         .then(res => {
           if (res.data.code == 100) {
             this.$message({
@@ -162,7 +162,7 @@ export default {
     // 得到所有回答方法
     initAnswer() {
       this.$baseAxios
-        .get(this.$baseUrl + "/teacher/question/answer/" + this.question.id)
+        .get(this.$baseUrl + "/student/question/answer/" + this.question.id)
         .then(res => {
           if (res.data.code == 100) {
             this.answerList = res.data.extend.answerVOList;
@@ -189,7 +189,7 @@ export default {
     handleDeleteAnswer() {},
     handleUpAnswer(answerId) {
       this.$baseAxios
-        .get(this.$baseUrl + "/teacher/answerUp/" + answerId)
+        .get(this.$baseUrl + "/student/answerUp/" + answerId)
         .then(res => {
           this.$message({
             showClose: true,

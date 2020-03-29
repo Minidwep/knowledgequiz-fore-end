@@ -36,10 +36,7 @@
             <el-button class="btn-link" type="text" @click="toQuestionSort()">问题分类</el-button>
           </el-col>
           <el-col :span="2" class="col-link">
-            <el-button class="btn-link" type="text" @click="toQuestionMannager()">问题管理</el-button>
-          </el-col>
-          <el-col :span="2" class="col-link">
-            <el-button class="btn-link" type="text" @click="toReword()">设置奖励</el-button>
+            <el-button class="btn-link" type="text" @click="toReword()">查看奖励</el-button>
           </el-col>
           <el-col :span="2" :offset="4" class="col-link">
             <el-button class="btn-link" type="text" @click="toGetUserInfo()">个人中心</el-button>
@@ -114,7 +111,7 @@ export default {
           console.log("search");
           this.loading = false;
           this.$baseAxios
-            .get(this.$baseUrl + "/teacher/questionList/keyword/" + query)
+            .get(this.$baseUrl + "/student/questionList/keyword/" + query)
             .then(res => {
               let questionList = res.data.extend.questionList;
               console.log(questionList);
@@ -161,7 +158,7 @@ export default {
         return;
       }
       this.$baseAxios
-        .get(this.$baseUrl + "/teacher/question/" + this.value)
+        .get(this.$baseUrl + "/student/question/" + this.value)
         .then(res => {
           console.log(res);
           if (res.data.code == 100) {
@@ -178,7 +175,8 @@ export default {
     },
     logout() {
       this.$store.commit("setToken", "");
-      this.$baseAxios.defaults.headers.common["Authorization"] = "Bearer ";
+      this.$baseAxios.defaults.headers.common["Authorization"] =
+        "Bearer ";
       this.$router.push({ path: "/Login" });
     }
   }
@@ -202,7 +200,6 @@ export default {
   background-color: #3283bb !important;
   cursor: pointer;
 }
-
 .logout:hover {
   cursor: pointer;
 }

@@ -47,12 +47,9 @@
       :current-page="pagination.currentPage"
       @current-change="handelCurrentChange($event)"
     ></el-pagination>
-
-    <el-button @click="dialog = true" type="primary" style="margin-left: 16px;">点我打开</el-button>
-
     <!-- 抽屉信息 -->
     <el-drawer
-      title="更新教师信息"
+      title="更新课程信息"
       :before-close="handleClose"
       :visible.sync="dialog"
       direction="rtl"
@@ -116,7 +113,7 @@ export default {
     // 去pn页查询分页信息
     toPage(pn) {
       this.loading = true;
-      axios
+      this.$baseAxios
         .get(this.$baseUrl + "/admin/Course?pn=" + pn)
         .then(res => {
           console.log(res);
@@ -152,15 +149,15 @@ export default {
           console.error(err);
         });
     },
-    // 更新教师信息
+    // 更新课程信息
     handleUpdateCourse(row) {
       this.dialog = true;
       this.form = row;
     },
-    // 删除教师信息
+    // 删除课程信息
     handleDeleteCourse(index, row) {
-      axios
-        .get(this.$baseUrl + "admin/Delete/Course?id=" + row.id)
+      this.$baseAxios
+        .get(this.$baseUrl + "/admin/Delete/Course?id=" + row.id)
         .then(res => {
           if (res.data.code == 100) {
             // this.courseData.splice(index, 1);
@@ -189,13 +186,13 @@ export default {
       if (this.loading) {
         return;
       }
-      this.$confirm("确定要修改教师吗？")
+      this.$confirm("确定要修改课程吗？")
         .then(_ => {
           this.loading = true;
           this.timer = setTimeout(() => {
             done();
-            axios
-              .post(this.$baseUrl + "admin/Update/Course", this.form)
+            this.$baseAxios
+              .post(this.$baseUrl + "/admin/Update/Course", this.form)
               .then(res => {
                 if (res.data.code == 100) {
                   this.loading = false;
@@ -239,7 +236,7 @@ export default {
         setTimeout(() => {
           console.log("search");
           this.loading = false;
-          axios
+          this.$baseAxios
             .get(this.$baseUrl + "/admin/Key/Course?keyword=" + query)
             .then(res => {
               let courses = res.data.extend.courses;
@@ -281,8 +278,8 @@ export default {
       }
       let strs = this.value.split("-");
       let id = strs[strs.length - 1];
-      axios
-        .get(this.$baseUrl + "admin/Id/Course?id=" + id)
+      this.$baseAxios
+        .get(this.$baseUrl + "/admin/Id/Course?id=" + id)
         .then(res => {
           if (res.data.extend.course == null || res.data.extend.course == "") {
             this.$message({
@@ -307,11 +304,11 @@ export default {
 
   data() {
     return {
-      // 教师列表
+      // 课程列表
       courseData: [],
-      // 教师任课列表
+      // 课程任课列表
       gridData: [],
-      // 当前操作的教师账号
+      // 当前操作的课程账号
       handleCourseAcc: -1,
       // 外层模态框
       dialogCourseVisible: false,
@@ -319,7 +316,7 @@ export default {
       innerVisible: false,
       // 加载框
       loading: false,
-      // 返回教师分页信息
+      // 返回课程分页信息
       pageInfo: "",
       // 分页信息
       pagination: {

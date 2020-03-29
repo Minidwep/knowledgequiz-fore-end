@@ -26,9 +26,9 @@
 
           <el-submenu index="4">
             <template slot="title">
-              <i class="el-icon-setting"></i>管理教师信息
+              <i class="el-icon-setting"></i>管理课程信息
             </template>
-            <el-menu-item index="/CourseMannager">教师信息</el-menu-item>
+            <el-menu-item index="/CourseMannager">课程信息</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>

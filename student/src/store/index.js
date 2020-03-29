@@ -5,10 +5,12 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 
     state: {
+
         //这里放全局参数
         token: '1',
         account: '1',
         name: '1'
+
     },
 
     mutations: {
