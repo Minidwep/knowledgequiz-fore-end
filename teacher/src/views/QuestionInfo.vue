@@ -45,7 +45,12 @@
     </div>
     <!-- 问题回答 -->
     <h5>最新回答：</h5>
-    <div style="margin-bottom:20px" v-for="item in answerList" :key="item.id">
+    <div
+      style="margin-bottom:20px"
+      v-for="item in answerList"
+      :key="item.id"
+      @click="handleOpenReword(item.id,item.account)"
+    >
       <!-- 回答者信息 -->
       <el-card shadow="hover" class="question-item">
         <div>
@@ -69,6 +74,16 @@
         </div>
       </el-card>
     </div>
+    <!-- 设置奖励 -->
+    <el-dialog title="设置奖励" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+      <el-select v-model="rewordParam.rewordId" placeholder="请选择">
+        <el-option v-for="item in rewordList" :key="item.id" :label="item.detail" :value="item.id"></el-option>
+      </el-select>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleSetReword()">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -105,13 +120,22 @@ export default {
         questionId: ""
       },
       answerList: [],
-      isHandleAnswer: false
+      isHandleAnswer: false,
+      rewordParam: {
+        teaAccount: this.$store.state.account,
+        stuAccount: "",
+        answerId: "",
+        rewordId: ""
+      },
+      rewordList: [],
+      dialogVisible: false
     };
   },
   created() {
     this.question = this.$route.params.question;
-
+    console.log(this.question);
     this.initAnswer();
+    this.initRewordList();
   },
   filters: {
     formatTimer: function(value) {
@@ -132,6 +156,29 @@ export default {
   },
 
   methods: {
+    // 获得奖励列表
+    initRewordList() {
+      let courseId = this.question.courseId;
+      this.$baseAxios
+        .get(this.$baseUrl + "/teacher/reword/course/" + courseId)
+        .then(res => {
+          if (res.data.code == 100) {
+            this.rewordList = res.data.extend.rewordList;
+          }
+          console.log(res);
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
+    },
+
     // 富文本改变事件
     editorChange(html) {
       this.detail = html;
@@ -164,6 +211,8 @@ export default {
       this.$baseAxios
         .get(this.$baseUrl + "/teacher/question/answer/" + this.question.id)
         .then(res => {
+          console.log(res);
+
           if (res.data.code == 100) {
             this.answerList = res.data.extend.answerVOList;
             // 是否可以采纳或者删除该问题的回答
@@ -203,6 +252,48 @@ export default {
         .catch(err => {
           console.error(err);
         });
+    },
+
+    handleOpenReword(answerId, stuAccount) {
+      this.dialogVisible = true;
+      this.rewordParam.answerId = answerId;
+      this.rewordParam.stuAccount = stuAccount;
+    },
+    handleSetReword() {
+      if (this.rewordParam.rewordId == "") {
+        this.$message({
+          type: "error",
+          message: "请选择奖励！",
+          duration: 2000,
+          showClose: true
+        });
+        return;
+      } else {
+        this.$baseAxios
+          .put(this.$baseUrl + "/teacher/stuReword", this.rewordParam)
+          .then(res => {
+            if (res.data.code == 100) {
+              this.$message({
+                type: "success",
+                message: "设置奖励成功",
+                duration: 2000,
+                showClose: true
+              });
+            } else {
+              this.$message({
+                type: "error",
+                message: "设置奖励失败",
+                duration: 2000,
+                showClose: true
+              });
+            }
+            this.dialogVisible =false;
+            console.log(res);
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      }
     }
   }
 };

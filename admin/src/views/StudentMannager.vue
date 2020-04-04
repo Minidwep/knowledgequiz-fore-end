@@ -12,7 +12,7 @@
       <el-option v-for="item in options" :key="item.value" :label="item.name" :value="item.name"></el-option>
     </el-select>
     <el-button @click="getStudentByKey" type="primary" style="margin-left: 16px;">查询</el-button>
-    
+
     <!-- 表格信息 -->
     <el-table
       v-loading="loading"
@@ -62,7 +62,22 @@
       </el-table>
       <el-button type="primary" @click="innerVisible = true">添加</el-button>
 
-      <el-dialog width="30%" title="内层 Dialog" :visible.sync="innerVisible" append-to-body></el-dialog>
+      <el-dialog width="40%" title="添加学生选课" :visible.sync="innerVisible" append-to-body>
+        <el-select v-model="select" placeholder="请选择">
+          <el-option
+            v-for="item in courseOptions"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          ></el-option>
+        </el-select>
+        <br />
+ 
+        <div style="text-align:center;margin-top:40px">
+          <el-button type="primary" @click="handleAddStudentCourse()">添加</el-button>
+          <el-button type="primary" @click="innerVisible = false ">关闭</el-button>
+        </div>
+      </el-dialog>
     </el-dialog>
     <br />
     <el-pagination
@@ -136,6 +151,7 @@ export default {
 
   created: function() {
     this.toPage(1);
+    this.initCourseList();
   },
   methods: {
     // 获取当前页
@@ -330,8 +346,8 @@ export default {
       }
     },
     // 精确查询
-    getStudentByKey(){
-       if (this.value == "") {
+    getStudentByKey() {
+      if (this.value == "") {
         this.$message({
           showClose: true,
           message: "查询内容不能为空",
@@ -341,22 +357,60 @@ export default {
         return;
       }
       let strs = this.value.split("-");
-      let account = strs[strs.length-1];
-      this.$baseAxios.get(this.$baseUrl + "/admin/Account/Student?account="+account)
-      .then(res => {
-        let list = [];
-        list.push(res.data.extend.student);
-        this.studentData = list;
-        console.log(res)
-      })
-      .catch(err => {
-        console.error(err); 
-      })
-      if(this.value == '' || this.options)
-      console.log(this.value);
-       
+      let account = strs[strs.length - 1];
+      this.$baseAxios
+        .get(this.$baseUrl + "/admin/Account/Student?account=" + account)
+        .then(res => {
+          let list = [];
+          list.push(res.data.extend.student);
+          this.studentData = list;
+          console.log(res);
+        })
+        .catch(err => {
+          console.error(err);
+        });
+      if (this.value == "" || this.options) console.log(this.value);
+    },
+    initCourseList() {
+      this.$baseAxios
+        .get(this.$baseUrl + "/admin/courseList")
+        .then(res => {
+          if (res.data.code == 100) {
+            this.courseOptions = res.data.extend.courseList;
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    handleAddStudentCourse() {
+      let addcourseParam = {
+        courseId: this.select,
+        account: this.handleStudentAcc
+      };
+      this.$baseAxios
+        .put(this.$baseUrl + "/admin/studentCourse", addcourseParam)
+        .then(res => {
+          if (res.data.code == 100) {
+            this.$message({
+              showClose: true,
+              message: "添加成功",
+              type: "success",
+              duration: 1000
+            });
+          } else {
+            this.$message({
+              showClose: true,
+              message: "课程已存在",
+              type: "warning",
+              duration: 1000
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
     }
-   
   },
 
   data() {
@@ -400,7 +454,10 @@ export default {
       },
       // 搜索
       options: [],
-      value: ''
+      value: "",
+      // 选课
+      select: "",
+      courseOptions: []
     };
   }
 };

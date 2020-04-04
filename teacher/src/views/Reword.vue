@@ -7,7 +7,7 @@
       <el-tabs tab-position="left" @tab-click="handleClick">
         <el-tab-pane v-for="item1 in courseList" :key="item1.id" :label="item1.name">
           <el-card v-for="item in rewordList" :key="item.id" shadow="hover" class="question-item">
-            <div style="width:100%;height:100%">
+            <div style="width:100%;height:100%" @click="handleGetStudentByRewordId(item.id,1)">
               <el-row style="font-size:14px">
                 <el-col :span="15">
                   <p>{{item.detail}}</p>
@@ -50,6 +50,37 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <el-dialog title="奖励获得者" :visible.sync="dialogTableVisible">
+      <el-table :data="tableData">
+        <el-table-column property="stuName" label="学生姓名" width="100"></el-table-column>
+        <el-table-column property="stuAccount" label="学生账号" width="200"></el-table-column>
+        <el-table-column property="teaName" label="发布教师" width="100"></el-table-column>
+        <el-table-column label="操作">
+            <template slot-scope="scope">
+            <el-button
+              class="item-center"
+              icon="el-icon-delete"
+              @click="handleDelete(scope.row)"
+              type="danger"
+              size="small"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+        </el-table-column>
+      </el-table>
+      <div style="text-align:center">
+        <el-pagination
+          class="item-center"
+          background
+          layout="prev, pager, next"
+          :total="pagination.total"
+          :page-size="pagination.pageSize"
+          :current-page="pagination.currentPage"
+          @current-change="handelCurrentChange($event)"
+        ></el-pagination>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -69,6 +100,7 @@ export default {
     return {
       courseList: "",
       dialogFormVisible: false,
+      dialogTableVisible: false,
       form: {
         detail: "",
         courseId: "",
@@ -88,7 +120,14 @@ export default {
         courseId: [{ required: true, message: "请选择科目", trigger: "change" }]
       },
       rewordList: [],
-      index:0
+      index: 0,
+      tableData: [],
+      pagination: {
+        total: 1,
+        currentPage: 1,
+        pageSize: 1
+      },
+      rewordId:''
     };
   },
   computed: {},
@@ -113,6 +152,11 @@ export default {
       console.log(tab.index);
       this.index = tab.index;
       this.initRewordList(tab.index);
+    },
+    // 获取当前页
+    handelCurrentChange(event) {
+      console.log(event);
+      this.handleGetStudentByRewordId(this.courseId, event);
     },
     // 模态框
     createReword() {
@@ -174,6 +218,47 @@ export default {
               duration: 1000
             });
             this.initRewordList(this.index);
+          }
+          console.log(res);
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    handleGetStudentByRewordId(rewordId, pn) {
+      this.rewordId = rewordId;
+      this.$baseAxios
+        .get(this.$baseUrl + "/teacher/stuReword/" + rewordId + "/" + pn)
+        .then(res => {
+          if (res.data.code == 100) {
+            let pageInfo = res.data.extend.pageInfo;
+            this.pagination.total = pageInfo.total;
+            this.pagination.currentPage = pageInfo.current;
+            this.pagination.pageSize = pageInfo.size;
+            this.tableData = pageInfo.records;
+
+            this.dialogTableVisible = true;
+          }
+          console.log(res);
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    // 删除某个学生的奖励
+    handleDelete(stuReword){
+      let id = stuReword.id;
+         this.$baseAxios
+        .delete(this.$baseUrl + "/teacher/stuReword/" + id)
+        .then(res => {
+          if (res.data.code == 100) {
+            this.$message({
+              showClose: true,
+              message: "删除成功",
+              type: "success",
+              duration: 1000
+            });
+            this.handleGetStudentByRewordId(this.rewordId,this.pagination.currentPage);
           }
           console.log(res);
         })

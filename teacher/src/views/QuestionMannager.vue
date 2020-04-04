@@ -9,7 +9,6 @@
       ></el-switch>
       <span>查看已发布的问题</span>
       <el-divider></el-divider>
-      {{this.$store.state.account}}
     </div>
     <el-tabs tab-position="left" @tab-click="handleClick">
       <el-tab-pane v-for="item1 in courseList" :key="item1.id" :label="item1.name">
@@ -39,7 +38,7 @@
                   circle
                   @click="handleEditQuestion(item)"
                 ></el-button>
-                <el-button
+                <el-button v-if="!switchValue"
                   type="success"
                   icon="el-icon-check"
                   circle
@@ -187,13 +186,6 @@ export default {
             this.pagination.currentPage = pageInfo.current;
             this.pagination.pageSize = pageInfo.size;
             this.questionList = pageInfo.records;
-
-            // this.$message({
-            //   showClose: true,
-            //   message: "数据加载成功",
-            //   type: "success",
-            //   duration: 1000
-            // });
           } else {
             this.$message({
               showClose: true,

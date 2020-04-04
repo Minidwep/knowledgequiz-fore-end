@@ -5,7 +5,10 @@ import router from './router'
 import store from './store'
 import './plugins/element.js'
 import qs from 'qs'
-
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import VueQuillEditor from 'vue-quill-editor'
 var baseUrl = 'http://localhost:8080'
 axios.interceptors.response.use(undefined, (error) => {
   console.log("Error: " + error.response.status);
@@ -23,6 +26,7 @@ Vue.prototype.$qs = qs
 Vue.config.productionTip = false
 Vue.prototype.$baseAxios = axios
 
+Vue.use(VueQuillEditor, /* { default global options } */)
 
 new Vue({
   router,

@@ -8,7 +8,7 @@
       placeholder="请输入关键词"
       :remote-method="remoteMethod"
       :loading="loading"
-    >
+      >
       <el-option v-for="item in options" :key="item.value" :label="item.name" :value="item.name"></el-option>
     </el-select>
     <el-button @click="getCourseByKey" type="primary" style="margin-left: 16px;">查询</el-button>

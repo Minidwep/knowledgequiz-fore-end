@@ -6,6 +6,8 @@ import InitSystem from '../views/InitSystem'
 import StudentMannager  from '../views/StudentMannager'
 import TeacherMannager from '../views/TeacherMannager'
 import CourseMannager from '../views/CourseMannager'
+import QuestionMannager from '../views/QuestionMannager'
+
 import Router from 'vue-router'
 
 
@@ -50,6 +52,13 @@ const routes = [
         name: 'CourseMannager',
         component: CourseMannager
       }
+      ,
+      {
+        path: '/QuestionMannager',
+        name: 'QuestionMannager',
+        component: QuestionMannager
+      }
+      
     ]
   }
   

@@ -65,7 +65,22 @@
       </el-table>
       <el-button type="primary" @click="innerVisible = true">添加</el-button>
 
-      <el-dialog width="30%" title="内层 Dialog" :visible.sync="innerVisible" append-to-body></el-dialog>
+      <el-dialog width="40%" title="添加授课信息" :visible.sync="innerVisible" append-to-body>
+        <el-select v-model="select" placeholder="请选择">
+          <el-option
+            v-for="item in courseOptions"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          ></el-option>
+        </el-select>
+        <br />
+
+        <div style="text-align:center;margin-top:40px">
+          <el-button type="primary" @click="handleAddTeacherCourse()">添加</el-button>
+          <el-button type="primary" @click="innerVisible = false ">关闭</el-button>
+        </div>
+      </el-dialog>
     </el-dialog>
     <br />
     <!-- 分页信息 -->
@@ -78,7 +93,6 @@
       :current-page="pagination.currentPage"
       @current-change="handelCurrentChange($event)"
     ></el-pagination>
-
 
     <!-- 抽屉信息 -->
     <el-drawer
@@ -145,6 +159,7 @@ export default {
 
   created: function() {
     this.toPage(1);
+    this.initCourseList();
   },
   methods: {
     // 获取当前页
@@ -386,6 +401,46 @@ export default {
           console.error(err);
         });
       if (this.value == "" || this.options) console.log(this.value);
+    },
+    initCourseList() {
+      this.$baseAxios
+        .get(this.$baseUrl + "/admin/courseList")
+        .then(res => {
+          if (res.data.code == 100) {
+            this.courseOptions = res.data.extend.courseList;
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    handleAddTeacherCourse() {
+      let addcourseParam = {
+        courseId: this.select,
+        account: this.handleTeacherAcc
+      };
+      this.$baseAxios
+        .put(this.$baseUrl + "/admin/teacherCourse", addcourseParam)
+        .then(res => {
+          if (res.data.code == 100) {
+            this.$message({
+              showClose: true,
+              message: "添加成功",
+              type: "success",
+              duration: 1000
+            });
+          } else {
+            this.$message({
+              showClose: true,
+              message: "任课已存在",
+              type: "warning",
+              duration: 1000
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
     }
   },
 
@@ -424,7 +479,10 @@ export default {
       timer: null,
       // 搜索
       options: [],
-      value: ""
+      value: "",
+      // 任课
+      select: "",
+      courseOptions: []
     };
   }
 };

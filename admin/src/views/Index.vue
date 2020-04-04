@@ -30,6 +30,13 @@
             </template>
             <el-menu-item index="/CourseMannager">课程信息</el-menu-item>
           </el-submenu>
+
+          <el-submenu index="5">
+            <template slot="title">
+              <i class="el-icon-setting"></i>管理题目信息
+            </template>
+            <el-menu-item index="/QuestionMannager">题目信息</el-menu-item>
+          </el-submenu>
         </el-menu>
       </el-aside>
 

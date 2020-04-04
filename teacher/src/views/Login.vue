@@ -63,6 +63,7 @@ export default {
               }, 1000);
             })
             .catch(err => {
+              this.loading = true;
               this.loginError(err);
             });
         } else {
