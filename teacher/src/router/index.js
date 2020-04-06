@@ -8,6 +8,7 @@ import QuestionSort from '../views/QuestionSort'
 import UserInfo from '../views/UserInfo'
 import NewProblem from '../views/NewProblem'
 import QuestionMannager from '../views/QuestionMannager'
+import QuestionExcel from '../views/QuestionExcel'
 import Reword from '../views/Reword'
 import Hello from '@/components/Hello'
 import Router from 'vue-router'
@@ -74,6 +75,11 @@ const routes = [
         path:'/Reword',
         name:'Reword',
         component:Reword
+      },
+      {
+        path:'/QuestionExcel',
+        name:'QuestionExcel',
+        component:QuestionExcel
       }
     ]
   }

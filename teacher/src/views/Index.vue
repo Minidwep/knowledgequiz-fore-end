@@ -17,13 +17,14 @@
             placeholder="请输入关键词"
             :remote-method="remoteMethod"
             :loading="loading"
-            >
+          >
             <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-col>
         <el-col :span="10">
           <el-button type="success" @click="getStudentByKey()">搜索问题</el-button>
           <el-button type="primary" @click="toCreateProblem()">发布问题</el-button>
+          <el-button type="primary" @click="toProblemExcel()">问题导出</el-button>
         </el-col>
       </el-row>
 
@@ -102,6 +103,9 @@ export default {
     },
     toQuestionMannager() {
       this.$router.push({ path: "/QuestionMannager" });
+    },
+    toProblemExcel(){
+    this.$router.push({ path: "/QuestionExcel" });
     },
     toReword() {
       this.$router.push({ path: "/Reword" });

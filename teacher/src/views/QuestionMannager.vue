@@ -104,7 +104,8 @@ export default {
       dialogTitle: "",
       detail: `<p>问题详情</p>`,
       question: {},
-      switchValue: false
+      switchValue: false,
+
     };
   },
   created() {

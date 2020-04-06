@@ -13,12 +13,20 @@
                   <p>{{item.detail}}</p>
                 </el-col>
                 <el-col :span="5" :offset="3">
-                  <el-button
-                    type="danger"
-                    icon="el-icon-delete"
-                    @click="handleDeleteReword(item.id)"
-                    circle
-                  ></el-button>
+                  <div @click.stop>
+                    <el-button
+                      type="primary"
+                      icon="el-icon-edit"
+                      @click="handleUpdateReword(item.id)"
+                      circle
+                    ></el-button>
+                    <el-button
+                      type="danger"
+                      icon="el-icon-delete"
+                      @click="handleDeleteReword(item.id)"
+                      circle
+                    ></el-button>
+                  </div>
                 </el-col>
               </el-row>
             </div>
@@ -57,7 +65,7 @@
         <el-table-column property="stuAccount" label="学生账号" width="200"></el-table-column>
         <el-table-column property="teaName" label="发布教师" width="100"></el-table-column>
         <el-table-column label="操作">
-            <template slot-scope="scope">
+          <template slot-scope="scope">
             <el-button
               class="item-center"
               icon="el-icon-delete"
@@ -66,7 +74,6 @@
               size="small"
             >删除</el-button>
           </template>
-        </el-table-column>
         </el-table-column>
       </el-table>
       <div style="text-align:center">
@@ -127,7 +134,7 @@ export default {
         currentPage: 1,
         pageSize: 1
       },
-      rewordId:''
+      rewordId: ""
     };
   },
   computed: {},
@@ -190,6 +197,7 @@ export default {
         }
       });
     },
+    handleEdit() {},
     // 查看奖励
     initRewordList(index) {
       let courseId = this.courseList[index].id;
@@ -246,9 +254,9 @@ export default {
         });
     },
     // 删除某个学生的奖励
-    handleDelete(stuReword){
+    handleDelete(stuReword) {
       let id = stuReword.id;
-         this.$baseAxios
+      this.$baseAxios
         .delete(this.$baseUrl + "/teacher/stuReword/" + id)
         .then(res => {
           if (res.data.code == 100) {
@@ -258,7 +266,10 @@ export default {
               type: "success",
               duration: 1000
             });
-            this.handleGetStudentByRewordId(this.rewordId,this.pagination.currentPage);
+            this.handleGetStudentByRewordId(
+              this.rewordId,
+              this.pagination.currentPage
+            );
           }
           console.log(res);
         })

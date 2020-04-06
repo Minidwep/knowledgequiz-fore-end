@@ -16,7 +16,7 @@
                 <p>{{item.upTime | formatTimer}}</p>
               </el-col>
               <el-col :span="3">
-                <p>回答数：7</p>
+                <p>回答数：{{item.star}}</p>
               </el-col>
               <el-col :span="5">
                  <p :class="[item.status =='2'?'accept-ok':'accept']">{{item.status =='2'?"已有最佳答案":"待解决"}}</p>

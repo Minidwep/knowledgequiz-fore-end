@@ -55,14 +55,14 @@ export default {
           this.$baseAxios
             .post(this.$baseUrl + "/authenticate", this.form)
             .then(res => {
-              console.log(res
-              );
-              setTimeout(()=> {
+              console.log(res);
+              setTimeout(() => {
                 this.loading = false;
                 this.loginSuccess(res);
               }, 1000);
             })
             .catch(err => {
+              this.loading = false;
               this.loginError(err);
             });
         } else {
@@ -79,7 +79,7 @@ export default {
       this.$store.commit("setName", name);
       this.$store.commit("setAccount", account);
       sessionStorage.setItem("token", token);
-      let tokenInSession =  sessionStorage.getItem("token");
+      let tokenInSession = sessionStorage.getItem("token");
 
       console.log(this.$store.state.token);
       this.$baseAxios.defaults.headers.common["Authorization"] =

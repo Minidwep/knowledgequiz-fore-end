@@ -68,7 +68,7 @@
           <p class="answer-time">{{item.upTime | formatTimer}} 回答</p>
         </div>
         <div v-html="item.detail"></div>
-        <div style="text-align:right" v-if="isHandleAnswer">
+        <div style="text-align:right" v-if="isHandleAnswer" @click.stop>
           <el-button type="danger" @click="handleDeleteAnswer(item.id)">删除</el-button>
           <el-button type="success" @click="handleUpAnswer(item.id)">采纳</el-button>
         </div>
