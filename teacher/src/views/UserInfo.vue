@@ -12,21 +12,39 @@
             alt="头像"
           />
         </el-col>
-        <el-col :span="8" :offset="2" align="left">
-          <p>
-            提问数：
-            <span>{{userInfo.questionNum}}</span>
-          </p>
-          <p>
-            回答数：
-            <span>{{userInfo.answerNum}}</span>
-          </p>
-          <p>
-            采纳数：
-            <span>{{userInfo.answerStarNum}}</span>
-          </p>
+        <el-col :span="12" :offset="2" align="left">
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <p>
+                提问数：
+                <span>{{userInfo.questionNum}}</span>
+              </p>
+              <p>
+                回答数：
+                <span>{{userInfo.answerNum}}</span>
+              </p>
+              <p>
+                采纳数：
+                <span>{{userInfo.answerStarNum}}</span>
+              </p>
+            </el-col>
+            <el-col :span="12">
+              <p>
+                教研室：
+                <span>{{userInfo.user.research}}</span>
+              </p>
+              <p>
+                职位：
+                <span>{{userInfo.user.title}}</span>
+              </p>
+              <p>
+                学位：
+                <span>{{userInfo.user.acaDegree}}</span>
+              </p>
+            </el-col>
+          </el-row>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="2">
           <p></p>
         </el-col>
       </el-row>
@@ -150,7 +168,8 @@ export default {
       userInfo: {
         answerNum: "",
         answerStarNum: "",
-        questionNum: ""
+        questionNum: "",
+        user:{}
       },
       courseList: [],
       questionList: [],
@@ -235,6 +254,7 @@ export default {
           this.userInfo.answerNum = userInfo.answerNum;
           this.userInfo.answerStarNum = userInfo.answerStarNum;
           this.userInfo.questionNum = userInfo.questionNum;
+          this.userInfo.user = userInfo.user;
           console.log(this.userInfo);
         })
         .catch(err => {

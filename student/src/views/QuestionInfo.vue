@@ -140,6 +140,9 @@ export default {
     handleAnswerQuestion() {
       this.answerParam.account = this.$store.state.account;
       this.answerParam.detail = this.detail;
+      if (this.detail == "") {
+        return;
+      }
       this.answerParam.questionId = this.question.id;
       this.$baseAxios
         .post(this.$baseUrl + "/student/answer", this.answerParam)

@@ -69,7 +69,7 @@
         </div>
         <div v-html="item.detail"></div>
         <div style="text-align:right" v-if="isHandleAnswer" @click.stop>
-          <el-button type="danger" @click="handleDeleteAnswer(item.id)">删除</el-button>
+          <!-- <el-button type="danger" @click="handleDeleteAnswer(item.id)">删除</el-button> -->
           <el-button type="success" @click="handleUpAnswer(item.id)">采纳</el-button>
         </div>
       </el-card>
@@ -187,6 +187,10 @@ export default {
     handleAnswerQuestion() {
       this.answerParam.account = this.$store.state.account;
       this.answerParam.detail = this.detail;
+      if(this.detail == ''){
+        
+        return;
+      }
       this.answerParam.questionId = this.question.id;
       this.$baseAxios
         .post(this.$baseUrl + "/teacher/answer", this.answerParam)

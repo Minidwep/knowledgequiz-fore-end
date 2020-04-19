@@ -14,12 +14,12 @@
                 </el-col>
                 <el-col :span="5" :offset="3">
                   <div @click.stop>
-                    <el-button
+                    <!-- <el-button
                       type="primary"
                       icon="el-icon-edit"
                       @click="handleUpdateReword(item.id)"
                       circle
-                    ></el-button>
+                    ></el-button> -->
                     <el-button
                       type="danger"
                       icon="el-icon-delete"

@@ -23,6 +23,7 @@
     >
       <el-table-column prop="account" label="学号" min-width="!9%" align="center"></el-table-column>
       <el-table-column prop="name" label="姓名" min-width="!9%" align="center"></el-table-column>
+      <el-table-column prop="classes" label="班级" min-width="!9%" align="center"></el-table-column>
       <el-table-column prop="college" label="专业" min-width="!9%" align="center"></el-table-column>
       <el-table-column prop="pwd" label="密码" min-width="!9%" align="center"></el-table-column>
       <el-table-column label="操作" min-width="!9%">
@@ -43,7 +44,7 @@
       </el-table-column>
     </el-table>
     <!-- 学生任课信息 -->
-    <el-dialog title="授课信息" :visible.sync="dialogStudentVisible">
+    <el-dialog title="任课信息" :visible.sync="dialogStudentVisible">
       <el-table :data="gridData">
         <el-table-column type="index" width="50"></el-table-column>
         <el-table-column property="name" label="课程名" width="150"></el-table-column>
@@ -108,6 +109,9 @@
           </el-form-item>
           <el-form-item label="姓名" :label-width="formLabelWidth">
             <el-input v-model="form.name" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="班级" :label-width="formLabelWidth">
+            <el-input v-model="form.classes" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="专业" :label-width="formLabelWidth">
             <el-input v-model="form.college" autocomplete="off"></el-input>
@@ -329,7 +333,7 @@ export default {
                   name: "",
                   value: ""
                 };
-                item.name = element.name + "-" + element.account;
+                item.name = element.name + "-" + element.account + "-"+ element.classes;
                 item.value = element.account;
                 options.push(item);
               });
@@ -357,7 +361,7 @@ export default {
         return;
       }
       let strs = this.value.split("-");
-      let account = strs[strs.length - 1];
+      let account = strs[strs.length - 2];
       this.$baseAxios
         .get(this.$baseUrl + "/admin/Account/Student?account=" + account)
         .then(res => {
@@ -442,7 +446,8 @@ export default {
         account: "",
         name: "",
         pwd: "",
-        college: ""
+        college: "",
+        classes:""
       },
       formLabelWidth: "80px",
       timer: null,
