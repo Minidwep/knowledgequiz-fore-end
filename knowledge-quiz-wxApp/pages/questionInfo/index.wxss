@@ -1,0 +1,36 @@
+page {
+    background-color: #FFFFFF;
+}
+
+image {
+    margin: 4px 0;
+}
+
+.question_detail {
+    margin-bottom: 80rpx;
+}
+
+.status_ok {
+    color: #67c23a;
+    background-color:#f8f8f8;
+}
+.Scancode {
+    font-size: 39rpx;
+    background: #c3c3c3;
+    position: fixed;
+    bottom: 30rpx;
+    display: flex;
+    width: 100vw;
+    left: 25%;
+    justify-content: center;
+  }
+.weui-demo-dialog{
+    visibility:hidden;
+    opacity:0;
+    transition:opacity .3s;
+  }
+  .weui-demo-dialog_show{
+    visibility:visible;
+    opacity:1;
+  }
+  

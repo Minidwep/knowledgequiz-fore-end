@@ -1,0 +1,33 @@
+<wxs module="tutil" src="../../utils/date.wxs"></wxs>
+<view class="page" style="height:100%">
+    <view class="weui-cell  weui-cell_vcode">
+        <view class="weui-cell__bd">
+            <input class="weui-input" bindinput="keyInput" placeholder="关键字" />
+        </view>
+        <view class="weui-cell__ft">
+            <span class="iconfont icon-search"></span>
+            <span class="weui-vcode-btn" bindtap="handleSearch" style="color:#000">搜索</span>
+        </view>
+    </view>
+    <view class="box" wx:for="{{questionList}}" wx:key="id">
+    <view class="weui-media-box weui-media-box_text box-warp" >
+        <view bindtap="handleNavigator" data-item="{{item}}">
+            <view class="weui-media-box__title weui-media-box__title_in-text">{{item.title}}</view>
+            <view class="weui-media-box__desc">
+                {{item.courseName}}  -
+                <span wx:if="{{item.star >0}}">已经有{{item.star}}人回答</span>
+                <span wx:if="{{item.star ==0}}">还没有人回答</span>
+            </view>
+            <view class="weui-media-box__info">
+                <span class="weui-media-box__info__meta">{{item.userName}} </span>
+                <span class="weui-media-box__info__meta {{item.status == 1 ?'status_1':'status_2'}}">
+                    {{tutil.formatStatus(item.status)}} 
+                </span>
+                <span class="weui-media-box__info__meta weui-media-box__info__meta_extra">
+                    {{tutil.formatTime(item.upTime)}}
+                </span>
+            </view>
+        </view>
+    </view>
+    </view>
+</view>

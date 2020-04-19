@@ -1,0 +1,50 @@
+var formatTime = function (date) {
+    var date = getDate(date)
+    var year = date.getFullYear()
+    var month = date.getMonth() + 1
+    var day = date.getDate()
+    var hour = date.getHours()
+    var minute = date.getMinutes()
+    var second = date.getSeconds()
+
+    // return [year, month, day].map(formatNumber).join('-') + ' ' + [hour, minute,
+    //     second
+    // ].map(formatNumber).join(':')
+    return [year, month, day].map(formatNumber).join('-');
+}
+var formatStatus = function (e) {
+    if (e == 1)
+        return "未解决";
+    if (e == 2)
+        return "已解决";
+}
+var formatDetail = function (e) {
+    // var reg1 = new RegExp("(?m)(<P>[^\^]*</P>)*");
+    // console.log(e);
+    var reg = "[\u4e00-\u9fa5]+";
+    var str = e.match(reg);
+    // var strTemp = '';
+    // for (var index = 0; index < str.length; index++) {
+    //     console.log(str[index]);
+
+    //     strTemp +=str[index];
+    // }               
+    // var reg1 = getRegExp("<p>", "g");
+    // var reg2 = getRegExp("</p>", "g");
+    var strNext = str.toString();
+    // strNext = strNext.replace(reg1, "");
+    // strNext = strNext.replace(reg2, "");
+    return strNext;
+
+}
+var formatNumber = function (n) {
+    n = n.toString()
+    return n[1] ? n : '0' + n
+}
+
+module.exports = {
+    formatTime: formatTime,
+    formatNumber: formatNumber,
+    formatStatus: formatStatus,
+    formatDetail: formatDetail
+}

@@ -1,0 +1,22 @@
+.status_1 {
+    color: #d18c4c;
+}
+
+.status_2 {
+    color: #67c23a;
+}
+
+page {
+    background-color:#f3f3f3;
+}
+
+.box {
+    margin-bottom: 10rpx;
+    margin-left: 5rpx;
+    margin-right: 5rpx;
+    border-radius: 10rpx;
+}
+
+.box-warp {
+    background-color:#ffffff
+}

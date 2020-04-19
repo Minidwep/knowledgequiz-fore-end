@@ -1,0 +1,47 @@
+{
+  "pages": [
+    "pages/login/index",
+    "pages/index/index",
+    "pages/question/index",
+    "pages/info/index",
+    "pages/questionInfo/index",
+    "pages/answerInfo/index",
+    "pages/answer/index",
+    "editor/editor"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#3883fa",
+    "navigationBarTitleText": "知识问答",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#ff2d4a",
+    "backgroundColor": "#fafafa",
+    "position": "bottom",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "icons/shibie.png",
+        "selectedIconPath": "icons/shibie-o.png"
+      },
+      {
+        "pagePath": "pages/question/index",
+        "text": "问题发布",
+        "iconPath": "icons/dati.png",
+        "selectedIconPath": "icons/dati-o.png"
+      },
+      {
+        "pagePath": "pages/info/index",
+        "text": "我的信息",
+        "iconPath": "icons/paihangbang.png",
+        "selectedIconPath": "icons/paihangbang-o.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,66 @@
+<view class="page">
+    <view class="weui-form__text-area" style="margin-top:30rpx">
+        <view style="margin-bottom:30rpx" class="weui-form__title">发布问题</view>
+    </view>
+    <view class="page__bd">
+        <!-- <view class="weui-cells__group weui-cells__group_form">
+        <view class="weui-cells weui-cells_form">
+            <view class="weui-cell ">
+                <view class="weui-cell__hd">
+                    <label class="weui-label">标题</label>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" bindinput="titleInput" placeholder="请输入标题" />
+                </view>
+            </view>
+        </view>
+    </view> -->
+        <view style="margin-bottom:30rpx" class="weui-cells weui-cells_after-title">
+            <view class="weui-cell ">
+               
+                <view class="weui-cell__bd">
+                    <input class="weui-input" bindinput="titleInput" placeholder="请输入标题" />
+                </view>
+            </view>
+        </view>
+        <view style="margin-bottom:30rpx;background-color:#fff;" class="weui-cell weui-cell_select">
+            <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                <label style="margin-left:10rpx" class="weui-label">科目</label>
+            </view>
+            <view class="weui-cell__bd">
+                <picker bindchange="bindCountryChange" value="{{arrayIndex}}" range="{{array}}">
+                    <view style="color:black" class="weui-select weui-select_in-select-after">
+                        {{courseList[arrayIndex].name}}
+                    </view>
+                </picker>
+            </view>
+        </view>
+    </view>
+    <!-- pages/editor.wxml -->
+    <view class="q-quill" style="background-color:#fff;">
+        <view class="toolbar" catchtouchend="format1" style="bottom: {{isIOS ? keyboardHeight : 0}}px">
+            <i class="iconfont icon-charutupian" catchtouchend="insertImage1"></i>
+            <i class="iconfont icon-format-header-2 {{formats.header === 2 ? 'ql-active' : ''}}" data-name="header" data-value="{{2}}"></i>
+            <i class="iconfont icon-format-header-3 {{formats.header === 3 ? 'ql-active' : ''}}" data-name="header" data-value="{{3}}"></i>
+            <i class="iconfont icon-zitijiacu {{formats.bold ? 'ql-active' : ''}}" data-name="bold"></i>
+            <i class="iconfont icon-zitixieti {{formats.italic ? 'ql-active' : ''}}" data-name="italic"></i>
+            <i class="iconfont icon-zitixiahuaxian {{formats.underline ? 'ql-active' : ''}}" data-name="underline"></i>
+            <i class="iconfont icon--checklist" data-name="list" data-value="check"></i>
+            <i class="iconfont icon-youxupailie {{formats.list === 'ordered' ? 'ql-active' : ''}}" data-name="list" data-value="ordered"></i>
+            <i class="iconfont icon-wuxupailie {{formats.list === 'bullet' ? 'ql-active' : ''}}" data-name="list" data-value="bullet"></i>
+            <i class="iconfont iconjuzhong {{formats.align === 'center' ? 'ql-active' : ''}}" data-name="align" data-value="center">
+                中
+            </i>
+        </view>
+        <view class="container" >
+            <!-- 这个editor 是微信提供的组件 -->
+            <editor id="editor1" class="ql-container" placeholder="{{placeholder}}" bindstatuschange="onStatusChange1" bindready="onEditorReady1" show-img-size="{{true}}" show-img-resize="{{true}}" show-img-toolbar="{{true}}" bindblur="blur1"></editor>
+        </view>
+    </view>
+    <!-- <view style="color:#e8e8e8">点击这个位置，让富文本失焦</view> -->
+    <!-- 这是对应解析富文本的组件 -->
+    <!-- <rich-text nodes="{{param.content}}"></rich-text> -->
+    <view style="width:100vw" bindtap='handleQuestion'>
+        <button class='Scancode' bindtap='handleUp'>发布</button>
+    </view>
+</view>

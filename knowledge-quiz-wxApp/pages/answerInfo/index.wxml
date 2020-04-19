@@ -1,0 +1,37 @@
+<import src="../../wxParse/wxParse.wxml" />
+<wxs module="tutil" src="../../utils/date.wxs"></wxs>
+<view class="page">
+    <view class="page__bd">
+        <view class="weui-navigation-bar">
+            <view class="weui-navigation-bar__placeholder" style="visible: hidden;"></view>
+            <view class="weui-navigation-bar__inner">
+                <view class='weui-navigation-bar__left'>
+                    <view class="weui-navigation-bar__buttons">
+                        <view bindtap="back" class="weui-navigation-bar__button weui-navigation-bar__btn_goback"></view>
+                    </view>
+                </view>
+                <view class='weui-navigation-bar__center'>
+                    <text>问题详情</text>
+                </view>
+                <view class='weui-navigation-bar__right'></view>
+            </view>
+        </view>
+    </view>
+    <view class="weui-media-box weui-media-box_text">
+        <view>
+            <view class="weui-media-box__title weui-media-box__title_in-text">{{title}}</view>
+            <view class="weui-media-box__desc"></view>
+            <view class="weui-media-box__info">
+                <view class="weui-media-box__info__meta">回答者：{{answerInfo.username}}</view>
+                <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
+                    {{tutil.formatTime(answerInfo.upTime)}}
+                </view>
+            </view>
+        </view>
+    </view>
+    <view class="page__bd">
+        <view class="question_detail">
+            <template style="width:100vw" is="wxParse" data="{{wxParseData:detail.nodes}}" />
+        </view>
+    </view>
+</view>
