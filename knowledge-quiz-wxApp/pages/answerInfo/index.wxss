@@ -1,1 +1,11 @@
 /* pages/answerInfo/index.wxss */
+.Scancode {
+    font-size: 39rpx;
+    background: #c3c3c3;
+    position: fixed;
+    bottom: 30rpx;
+    display: flex;
+    width: 100vw;
+    left: 25%;
+    justify-content: center;
+  }

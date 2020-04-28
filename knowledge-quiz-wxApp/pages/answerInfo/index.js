@@ -23,7 +23,8 @@ Page({
       responseType: 'text',
     },
     loading: false,
-    answerFlag: false
+    answerFlag: false,
+    answerId:0
   },
 
   back() {
@@ -53,6 +54,25 @@ Page({
       })
     }
   },
+  async handleUpAnswer() {
+    this.data.answerParam.url = "/answerUp/" + this.data.answerId;
+    let res = await requestNext(this.data.answerParam);
+    console.log(res);
+    authorizationCheck(res);
+    if (res.data.code == 100) {
+      wx.showToast({
+        title: '采纳成功',
+        icon: 'success',
+        duration: 1000
+      });
+    } else {
+      wx.showToast({
+        title: '采纳失败',
+        icon: 'none',
+        duration: 1000
+      });
+    }
+  },
   onLoad: function (options) {
     var answerId = options.answerId;
     var title = options.title;
@@ -69,7 +89,8 @@ Page({
       title: title,
       questionAccount:questionAccount,
       questionFlag:questionFlag,
-      answerFlag:answerFlag
+      answerFlag:answerFlag,
+      answerId:answerId
     })
 
     console.log(answerId);

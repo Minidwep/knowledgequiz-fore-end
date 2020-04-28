@@ -34,4 +34,7 @@
             <template style="width:100vw" is="wxParse" data="{{wxParseData:detail.nodes}}" />
         </view>
     </view>
+    <view wx:if="{{answerFlag}}" style="width:100vw">
+        <button class='Scancode' bindtap='handleUpAnswer'>采纳</button>
+    </view>
 </view>
